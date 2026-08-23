@@ -22,8 +22,12 @@ export function SiteFooter() {
   ] as const;
 
   return (
-    <footer className="mt-auto border-t border-ink/8 bg-paper/50">
-      <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+    <footer className="relative mt-auto overflow-hidden border-t border-ink/10 bg-paper/80">
+      <div
+        aria-hidden
+        className="paper-grain pointer-events-none absolute inset-0 opacity-[0.04]"
+      />
+      <div className="relative mx-auto max-w-6xl px-4 py-10 sm:px-6">
         <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-3">
             <Wordmark showUnderline />
@@ -32,22 +36,19 @@ export function SiteFooter() {
               href={INSTAGRAM_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-sm font-medium text-ink transition-colors hover:text-ink-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-powder rounded-sm"
+              className="inline-flex items-center gap-2 rounded-sm text-sm font-medium text-ink transition-colors hover:text-ink-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-powder"
             >
               <Instagram className="size-4" aria-hidden />
               {t("instagram")}
             </a>
           </div>
 
-          <nav
-            className="flex flex-wrap gap-x-4 gap-y-2"
-            aria-label="Footer"
-          >
+          <nav className="flex flex-wrap gap-x-4 gap-y-2" aria-label="Footer">
             {items.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-sm text-ink-muted transition-colors hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-powder rounded-sm"
+                className="rounded-sm text-sm text-ink-muted transition-colors hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-powder"
               >
                 {item.label}
               </Link>
@@ -63,7 +64,7 @@ export function SiteFooter() {
           <p>{tFooter("rights", { year })}</p>
           <Link
             href="/admin/login"
-            className="text-ink-muted/70 transition-colors hover:text-ink-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-powder rounded-sm"
+            className="rounded-sm text-ink-muted/70 transition-colors hover:text-ink-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-powder"
           >
             {tFooter("adminLogin")}
           </Link>

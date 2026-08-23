@@ -1,10 +1,12 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
-import { BookCover } from "@/components/books/book-cover";
+import { BookSpread } from "@/components/book/book-spread";
+import { BookCover3D } from "@/components/book/book-cover-3d";
+import { HandDrawnUnderline } from "@/components/book/hand-drawn-underline";
+import { InkReveal } from "@/components/book/ink-reveal";
 import { Star, SpeechBubble } from "@/components/brand/decorative";
 import { INSTAGRAM_URL } from "@/lib/constants";
 import type { Book } from "@/types/database";
@@ -17,7 +19,7 @@ type HomeHeroProps = {
 
 export function HomeHero({ currentBook, candidateBooks }: HomeHeroProps) {
   const t = useTranslations("Home");
-  const reduceMotion = useReducedMotion();
+  const tBook = useTranslations("BookExperience");
   const covers = [
     currentBook,
     ...candidateBooks.filter((b) => b.id !== currentBook?.id),
@@ -26,38 +28,27 @@ export function HomeHero({ currentBook, candidateBooks }: HomeHeroProps) {
     .slice(0, 3) as Book[];
 
   return (
-    <section className="relative overflow-hidden">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -left-16 top-8 h-48 w-48 rounded-full bg-blush/40 blur-3xl"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -right-10 bottom-0 h-56 w-56 rounded-full bg-powder/50 blur-3xl"
-      />
-
-      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] md:items-center md:gap-12 md:py-20 lg:px-8">
-        <div className="relative z-10">
+    <BookSpread
+      chapter={tBook("chapterWelcome")}
+      pageStart={1}
+      className="rounded-none border-0 shadow-none bg-transparent"
+      left={
+        <div className="flex h-full flex-col justify-center py-2">
           <div className="mb-4 flex items-center gap-2 text-ink-muted">
             <Star className="h-4 w-4 text-blush" />
             <SpeechBubble className="h-4 w-4 text-powder" />
           </div>
-          <motion.h1
-            className="font-display text-4xl leading-[1.1] tracking-tight text-ink sm:text-5xl md:text-6xl"
-            initial={reduceMotion ? false : { opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, ease: "easeOut" }}
-          >
-            {t("heroTitle")}
-          </motion.h1>
-          <motion.p
-            className="mt-5 max-w-xl text-base leading-relaxed text-ink-muted sm:text-lg"
-            initial={reduceMotion ? false : { opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, delay: 0.08, ease: "easeOut" }}
-          >
-            {t("heroSubtitle")}
-          </motion.p>
+          <InkReveal>
+            <h1 className="font-display text-3xl leading-[1.12] tracking-tight text-ink sm:text-4xl lg:text-5xl">
+              {t("heroTitle")}
+            </h1>
+          </InkReveal>
+          <HandDrawnUnderline className="mt-2 max-w-[9rem]" />
+          <InkReveal delay={0.12}>
+            <p className="mt-5 max-w-md text-base leading-relaxed text-ink-muted">
+              {t("heroSubtitle")}
+            </p>
+          </InkReveal>
           <div className="mt-8 flex flex-wrap gap-3">
             <Button asChild size="lg">
               <Link href={currentBook ? "/#current-book" : "/books"}>
@@ -71,49 +62,49 @@ export function HomeHero({ currentBook, candidateBooks }: HomeHeroProps) {
             </Button>
           </div>
         </div>
-
-        <motion.div
-          className="relative mx-auto flex h-[280px] w-full max-w-md items-end justify-center sm:h-[320px]"
-          initial={reduceMotion ? false : { opacity: 0, scale: 0.96 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.12 }}
+      }
+      right={
+        <div
+          className="relative mx-auto flex h-[260px] w-full max-w-sm items-end justify-center sm:h-[300px]"
           aria-hidden={covers.length === 0}
         >
           {covers.length === 0 ? (
-            <div className="flex h-56 w-40 items-center justify-center rounded-xl bg-lavender/50 shadow-soft">
+            <div className="flex h-52 w-36 items-center justify-center rounded-lg bg-lavender/50 shadow-soft">
               <Star className="h-8 w-8 text-ink/30" />
             </div>
           ) : (
             covers.map((book, index) => {
-              const rotations = [-8, 4, 12];
+              const rotations = [-10, 3, 11];
               const offsets = [
-                "translate-x-[-28%] z-10",
-                "translate-x-[0%] z-20",
-                "translate-x-[28%] z-0",
+                "left-[8%] z-10",
+                "left-1/2 z-20 -translate-x-1/2",
+                "right-[8%] z-0",
               ];
               return (
                 <div
                   key={book.id}
                   className={cn(
-                    "absolute bottom-2 w-[38%] max-w-[140px] drop-shadow-md transition-transform",
+                    "absolute bottom-3 w-[42%] max-w-[150px]",
                     offsets[index] ?? offsets[0],
                   )}
-                  style={{ transform: `rotate(${rotations[index] ?? 0}deg)` }}
+                  style={{
+                    transform: `rotate(${rotations[index] ?? 0}deg)`,
+                  }}
                 >
-                  <BookCover
+                  <BookCover3D
                     src={book.cover_url}
                     alt={book.title}
                     title={book.title}
-                    className="aspect-[2/3] w-full rounded-lg shadow-soft ring-1 ring-ink/5"
-                    sizes="140px"
+                    priority={index === 0}
+                    className="w-full"
                   />
                 </div>
               );
             })
           )}
-          <div className="absolute inset-x-8 bottom-0 h-6 rounded-[100%] bg-ink/5 blur-sm" />
-        </motion.div>
-      </div>
-    </section>
+          <div className="absolute inset-x-10 bottom-0 h-5 rounded-[100%] bg-ink/5 blur-sm" />
+        </div>
+      }
+    />
   );
 }

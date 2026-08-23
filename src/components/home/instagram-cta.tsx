@@ -1,46 +1,59 @@
-import { getTranslations } from "next-intl/server";
-import { Button } from "@/components/ui/button";
+"use client";
+
+import Image from "next/image";
+import { useTranslations } from "next-intl";
+import { BookSpread } from "@/components/book/book-spread";
+import { StampBadge } from "@/components/book/stamp-badge";
 import { Instagram } from "@/components/brand/decorative";
-import { INSTAGRAM_URL } from "@/lib/constants";
-import type { Locale } from "@/lib/constants";
+import { Button } from "@/components/ui/button";
+import { INSTAGRAM_URL, SITE_NAME } from "@/lib/constants";
 
 type InstagramCtaProps = {
-  locale: Locale;
   href?: string;
 };
 
-export async function InstagramCta({
-  locale,
-  href = INSTAGRAM_URL,
-}: InstagramCtaProps) {
-  const t = await getTranslations({ locale, namespace: "Home" });
+export function InstagramCta({ href = INSTAGRAM_URL }: InstagramCtaProps) {
+  const t = useTranslations("Home");
+  const tBook = useTranslations("BookExperience");
 
   return (
-    <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
-      <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-blush/50 via-paper to-powder/40 px-6 py-12 text-center shadow-soft ring-1 ring-ink/5 sm:px-12 sm:py-14">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -left-8 top-6 h-28 w-28 rounded-full bg-butter/50 blur-2xl"
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -right-6 bottom-4 h-32 w-32 rounded-full bg-lavender/40 blur-2xl"
-        />
-        <h2 className="relative font-display text-3xl text-ink sm:text-4xl">
-          {t("instagramCta.title")}
-        </h2>
-        <p className="relative mx-auto mt-4 max-w-lg text-base text-ink-muted">
-          {t("instagramCta.body")}
-        </p>
-        <div className="relative mt-8">
-          <Button asChild size="lg" variant="secondary">
-            <a href={href} target="_blank" rel="noopener noreferrer">
-              <Instagram className="h-4 w-4" />
-              {t("instagramCta.button")}
-            </a>
-          </Button>
+    <BookSpread
+      chapter={tBook("chapterInstagram")}
+      pageStart={11}
+      className="rounded-none border-0 border-t border-ink/8 shadow-none bg-transparent"
+      left={
+        <div className="bookmark-ribbon flex h-full flex-col items-center justify-center gap-5 py-8 text-center">
+          <Image
+            src="/logo.png"
+            alt=""
+            width={72}
+            height={72}
+            className="h-16 w-auto object-contain opacity-90"
+          />
+          <p className="font-display text-sm italic text-ink-muted">
+            {SITE_NAME}
+          </p>
+          <StampBadge tone="powder">@bla.bla.books.cy</StampBadge>
         </div>
-      </div>
-    </section>
+      }
+      right={
+        <div className="flex h-full flex-col justify-center py-4">
+          <h3 className="font-display text-3xl leading-tight text-ink sm:text-4xl">
+            {t("instagramCta.title")}
+          </h3>
+          <p className="mt-4 max-w-md font-display text-base italic leading-relaxed text-ink-muted">
+            {t("instagramCta.body")}
+          </p>
+          <div className="mt-8">
+            <Button asChild size="lg" variant="secondary">
+              <a href={href} target="_blank" rel="noopener noreferrer">
+                <Instagram className="h-4 w-4" />
+                {t("instagramCta.button")}
+              </a>
+            </Button>
+          </div>
+        </div>
+      }
+    />
   );
 }

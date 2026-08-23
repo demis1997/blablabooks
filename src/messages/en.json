@@ -121,6 +121,9 @@
   },
   "About": {
     "title": "About",
+    "bookplate": "Ex libris",
+    "belongsTo": "This book belongs to Bla Bla Books",
+    "bilingualNote": "Pages turn in English & Russian — switch language anytime.",
     "whoWeAre": "Who we are",
     "whatWeDo": "What we do",
     "whereWeMeet": "Where we meet",
@@ -351,5 +354,17 @@
     "archived": "Archived",
     "save": "Save",
     "cancel": "Cancel"
+  },
+  "BookExperience": {
+    "openBook": "Open the book",
+    "skipIntro": "Skip intro",
+    "chapterWelcome": "Welcome",
+    "chapterCurrent": "Currently reading",
+    "chapterMeetup": "Next meetup",
+    "chapterHow": "How it works",
+    "chapterGallery": "Gallery",
+    "chapterInstagram": "Instagram",
+    "contents": "Contents",
+    "pageOf": "Page {page} of {total}"
   }
 }

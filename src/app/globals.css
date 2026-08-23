@@ -73,6 +73,232 @@
     /* Animations/transitions apply by default; stripped when reduced motion is preferred */
   }
 
+  .book-desk-bg {
+    background-color: var(--cream);
+    background-image:
+      radial-gradient(ellipse 100% 70% at 8% 0%, rgb(243 205 213 / 0.42), transparent 55%),
+      radial-gradient(ellipse 90% 60% at 92% 8%, rgb(207 228 242 / 0.45), transparent 50%),
+      radial-gradient(ellipse 70% 50% at 50% 100%, rgb(221 232 213 / 0.3), transparent 55%),
+      radial-gradient(ellipse 50% 40% at 70% 40%, rgb(221 211 241 / 0.2), transparent 60%);
+  }
+
+  .paper-grain {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 180px 180px;
+    mix-blend-mode: multiply;
+  }
+
+  .book-spine-gutter {
+    background: linear-gradient(
+      to left,
+      rgb(48 44 53 / 0.07),
+      transparent 70%
+    );
+  }
+
+  .book-spine-gutter[data-side="right"] {
+    background: linear-gradient(
+      to right,
+      rgb(48 44 53 / 0.07),
+      transparent 70%
+    );
+  }
+
+  .bookmark-tab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 4.5rem;
+    padding-inline: 0.85rem;
+    border-radius: 0.65rem 0.65rem 0 0;
+    border: 1px solid rgb(48 44 53 / 0.1);
+    border-bottom: none;
+    box-shadow: 0 -2px 8px rgb(48 44 53 / 0.06);
+  }
+
+  .ticket-stub {
+    position: relative;
+    background:
+      radial-gradient(circle at left center, transparent 6px, var(--paper) 7px) left center / 12px 100% repeat-y,
+      radial-gradient(circle at right center, transparent 6px, var(--paper) 7px) right center / 12px 100% repeat-y;
+    background-color: var(--paper);
+  }
+
+  .ticket-stub::before,
+  .ticket-stub::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 12px;
+    background: radial-gradient(
+      circle,
+      transparent 5px,
+      rgb(48 44 53 / 0.08) 5.5px,
+      transparent 6px
+    );
+    background-size: 12px 14px;
+    background-repeat: repeat-y;
+    pointer-events: none;
+  }
+
+  .ticket-stub::before {
+    left: -6px;
+  }
+
+  .ticket-stub::after {
+    right: -6px;
+  }
+
+  .washi-tape {
+    position: absolute;
+    height: 0.7rem;
+    border-radius: 1px;
+    opacity: 0.9;
+    box-shadow: 0 1px 2px rgb(48 44 53 / 0.08);
+    mix-blend-mode: multiply;
+    background:
+      repeating-linear-gradient(
+        -18deg,
+        transparent,
+        transparent 3px,
+        rgb(255 255 255 / 0.28) 3px,
+        rgb(255 255 255 / 0.28) 4px
+      ),
+      linear-gradient(
+        90deg,
+        rgb(243 205 213 / 0.9),
+        rgb(207 228 242 / 0.95),
+        rgb(221 232 213 / 0.9)
+      );
+  }
+
+  .contents-leader {
+    flex: 1 1 auto;
+    min-width: 1.5rem;
+    margin-inline: 0.5rem;
+    border-bottom: 1.5px dotted rgb(48 44 53 / 0.28);
+    transform: translateY(-0.35em);
+  }
+
+  .bookmark-ribbon {
+    position: relative;
+  }
+
+  .bookmark-ribbon::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -1.75rem;
+    width: 1.35rem;
+    height: 2.25rem;
+    transform: translateX(-50%);
+    background: linear-gradient(180deg, var(--blush), color-mix(in srgb, var(--blush) 70%, var(--ink)));
+    clip-path: polygon(0 0, 100% 0, 100% 78%, 50% 100%, 0 78%);
+    box-shadow: 0 4px 10px rgb(48 44 53 / 0.12);
+  }
+
+  .polaroid-frame {
+    background-color: var(--paper);
+  }
+
+  .photo-corner {
+    position: absolute;
+    z-index: 2;
+    width: 14px;
+    height: 14px;
+    border-color: rgb(48 44 53 / 0.22);
+    pointer-events: none;
+  }
+
+  .photo-corner-tl {
+    top: 6px;
+    left: 6px;
+    border-top: 1.5px solid;
+    border-left: 1.5px solid;
+  }
+
+  .photo-corner-tr {
+    top: 6px;
+    right: 6px;
+    border-top: 1.5px solid;
+    border-right: 1.5px solid;
+  }
+
+  .photo-corner-bl {
+    bottom: 34px;
+    left: 6px;
+    border-bottom: 1.5px solid;
+    border-left: 1.5px solid;
+  }
+
+  .photo-corner-br {
+    bottom: 34px;
+    right: 6px;
+    border-bottom: 1.5px solid;
+    border-right: 1.5px solid;
+  }
+
+  .prose-bla {
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: var(--ink);
+  }
+
+  .prose-bla h1,
+  .prose-bla h2,
+  .prose-bla h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1.25;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+    break-after: avoid;
+  }
+
+  .prose-bla p {
+    margin-bottom: 1em;
+  }
+
+  .prose-bla a {
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-color: rgb(243 205 213 / 0.8);
+    text-underline-offset: 3px;
+  }
+
+  .prose-bla ul,
+  .prose-bla ol {
+    margin-bottom: 1em;
+    padding-left: 1.25em;
+  }
+
+  .about-dropcap > p:first-of-type::first-letter {
+    float: left;
+    font-family: var(--font-display);
+    font-size: 3.4em;
+    font-weight: 600;
+    line-height: 0.85;
+    padding-right: 0.12em;
+    padding-top: 0.08em;
+    color: var(--ink);
+  }
+
+  .margin-note {
+    border-left: 1px dashed rgb(48 44 53 / 0.2);
+    padding-left: 0.75rem;
+  }
+
+  @media (min-width: 1024px) {
+    .margin-note {
+      border-left: none;
+      padding-left: 0;
+      border-top: 1px dashed rgb(48 44 53 / 0.2);
+      padding-top: 0.5rem;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;

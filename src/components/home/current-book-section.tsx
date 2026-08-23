@@ -1,9 +1,14 @@
-import { getTranslations } from "next-intl/server";
+"use client";
+
+import { motion, useReducedMotion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { BookCover } from "@/components/books/book-cover";
-import { BookStatusBadge } from "@/components/books/book-status-badge";
+import { BookSpread } from "@/components/book/book-spread";
+import { BookCover3D } from "@/components/book/book-cover-3d";
+import { InkReveal } from "@/components/book/ink-reveal";
+import { StampBadge } from "@/components/book/stamp-badge";
 import { Button } from "@/components/ui/button";
-import { SectionHeading } from "@/components/ui/section-heading";
+import { motionTokens } from "@/lib/motion/tokens";
 import type { Book } from "@/types/database";
 import type { Locale } from "@/lib/constants";
 
@@ -12,11 +17,11 @@ type CurrentBookSectionProps = {
   locale: Locale;
 };
 
-export async function CurrentBookSection({
-  book,
-  locale,
-}: CurrentBookSectionProps) {
-  const t = await getTranslations({ locale, namespace: "Home" });
+export function CurrentBookSection({ book, locale }: CurrentBookSectionProps) {
+  const t = useTranslations("Home");
+  const tBook = useTranslations("BookExperience");
+  const reduceMotion = useReducedMotion();
+
   const description =
     locale === "ru"
       ? book.description_ru?.trim() || book.description
@@ -30,62 +35,83 @@ export async function CurrentBookSection({
         }).format(new Date(book.selected_year, book.selected_month - 1, 1))
       : null;
 
+  const slips = [
+    book.authors.join(", "),
+    book.page_count ? t("pages", { count: book.page_count }) : null,
+    book.language ? book.language.toUpperCase() : null,
+    selectedLabel,
+  ].filter(Boolean) as string[];
+
   return (
-    <section
-      id="current-book"
-      className="scroll-mt-24 border-y border-ink/5 bg-paper/50"
-    >
-      <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
-        <SectionHeading title={t("currentBook")} />
-        <div className="mt-8 grid gap-8 md:grid-cols-[200px_minmax(0,1fr)] md:gap-12 lg:grid-cols-[240px_minmax(0,1fr)]">
-          <div className="mx-auto w-44 md:mx-0 md:w-full">
-            <BookCover
-              src={book.cover_url}
-              alt={book.title}
-              title={book.title}
-              className="aspect-[2/3] w-full rounded-2xl shadow-soft ring-1 ring-ink/5"
-              sizes="(max-width: 768px) 176px, 240px"
-              priority
-            />
-          </div>
-          <div className="flex flex-col justify-center">
-            <div className="mb-3 flex flex-wrap items-center gap-2">
-              <BookStatusBadge
-                status={book.status}
-                label={t("currentlyReading")}
+    <div id="current-book" className="scroll-mt-24">
+      <BookSpread
+        chapter={tBook("chapterCurrent")}
+        pageStart={3}
+        className="rounded-none border-0 border-t border-ink/8 shadow-none bg-transparent"
+        left={
+          <div className="flex flex-col items-center justify-center gap-4 py-4">
+            <StampBadge tone="blush">{t("currentlyReading")}</StampBadge>
+            <motion.div
+              className="w-full max-w-[200px]"
+              initial={reduceMotion ? false : { opacity: 0, y: 48 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.35 }}
+              transition={{
+                duration: motionTokens.duration.page,
+                ease: motionTokens.ease.settle,
+              }}
+            >
+              <BookCover3D
+                src={book.cover_url}
+                alt={book.title}
+                title={book.title}
+                priority
+                className="w-full"
               />
-            </div>
-            <h3 className="font-display text-3xl text-ink md:text-4xl">
-              {book.title}
-            </h3>
+            </motion.div>
+          </div>
+        }
+        right={
+          <div className="flex h-full flex-col justify-center py-2">
+            <InkReveal>
+              <h3 className="font-display text-2xl text-ink sm:text-3xl">
+                {book.title}
+              </h3>
+            </InkReveal>
             {book.subtitle ? (
               <p className="mt-1 text-ink-muted">{book.subtitle}</p>
             ) : null}
-            <p className="mt-3 text-base text-ink">
-              {book.authors.join(", ")}
-            </p>
-            <div className="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-sm text-ink-muted">
-              {book.page_count ? (
-                <span>{t("pages", { count: book.page_count })}</span>
-              ) : null}
-              {book.language ? <span>{book.language.toUpperCase()}</span> : null}
-              {selectedLabel ? <span>{selectedLabel}</span> : null}
-            </div>
+
+            <ul className="mt-5 flex flex-col gap-2">
+              {slips.map((slip, i) => (
+                <li
+                  key={`${slip}-${i}`}
+                  className="inline-flex w-fit max-w-full rounded-sm border border-ink/10 bg-butter/30 px-3 py-1.5 font-display text-sm text-ink shadow-sm"
+                  style={{ transform: `rotate(${i % 2 === 0 ? -0.8 : 0.6}deg)` }}
+                >
+                  {slip}
+                </li>
+              ))}
+            </ul>
+
             {description ? (
-              <p className="mt-5 max-w-2xl text-base leading-relaxed text-ink-muted line-clamp-4">
-                {description}
-              </p>
+              <InkReveal delay={0.1} className="mt-5">
+                <p className="max-w-md text-base leading-relaxed text-ink-muted line-clamp-5">
+                  {description}
+                </p>
+              </InkReveal>
             ) : null}
+
             <div className="mt-7">
               <Button asChild variant="outline">
-                <Link href={`/books?status=currently_reading`}>
+                <Link href="/books?status=currently_reading">
                   {t("viewDetails")}
                 </Link>
               </Button>
             </div>
           </div>
-        </div>
-      </div>
-    </section>
+        }
+      />
+    </div>
   );
 }

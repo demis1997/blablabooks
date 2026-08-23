@@ -6,6 +6,7 @@ import { Menu } from "lucide-react";
 import { Link, usePathname } from "@/i18n/navigation";
 import { INSTAGRAM_URL } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import { BookmarkNav } from "@/components/book/bookmark-nav";
 import { Instagram } from "@/components/brand/decorative";
 import { Wordmark } from "@/components/brand/wordmark";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
@@ -16,6 +17,7 @@ export function SiteHeader() {
   const t = useTranslations("Nav");
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const isAdmin = pathname.includes("/admin");
 
   const items: NavItem[] = [
     { href: "/", label: t("home") },
@@ -31,30 +33,46 @@ export function SiteHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-ink/8 bg-cream/85 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
+    <header
+      className={cn(
+        "sticky top-0 z-40",
+        isAdmin
+          ? "border-b border-ink/8 bg-cream/95 backdrop-blur-md"
+          : "border-b border-ink/5 bg-cream/70 backdrop-blur-md supports-[backdrop-filter]:bg-cream/55",
+      )}
+    >
+      <div
+        className={cn(
+          "mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 sm:px-6",
+          isAdmin ? "h-16" : "h-14 sm:h-16",
+        )}
+      >
         <Wordmark />
 
-        <nav
-          className="hidden items-center gap-1 lg:flex"
-          aria-label="Primary"
-        >
-          {items.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "rounded-lg px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-powder focus-visible:ring-offset-2 focus-visible:ring-offset-cream",
-                isActive(item.href)
-                  ? "bg-powder/50 text-ink"
-                  : "text-ink-muted hover:bg-ink/5 hover:text-ink",
-              )}
-              aria-current={isActive(item.href) ? "page" : undefined}
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+        {isAdmin ? (
+          <nav
+            className="hidden items-center gap-1 lg:flex"
+            aria-label="Primary"
+          >
+            {items.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "rounded-lg px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-powder focus-visible:ring-offset-2 focus-visible:ring-offset-cream",
+                  isActive(item.href)
+                    ? "bg-powder/50 text-ink"
+                    : "text-ink-muted hover:bg-ink/5 hover:text-ink",
+                )}
+                aria-current={isActive(item.href) ? "page" : undefined}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+        ) : (
+          <BookmarkNav items={items} activeHref={pathname} />
+        )}
 
         <div className="flex items-center gap-2">
           <a

@@ -121,6 +121,9 @@
   },
   "About": {
     "title": "О нас",
+    "bookplate": "Ex libris",
+    "belongsTo": "Эта книга принадлежит Bla Bla Books",
+    "bilingualNote": "Страницы на английском и русском — язык можно сменить в любой момент.",
     "whoWeAre": "Кто мы",
     "whatWeDo": "Чем занимаемся",
     "whereWeMeet": "Где встречаемся",
@@ -351,5 +354,17 @@
     "archived": "В архиве",
     "save": "Сохранить",
     "cancel": "Отмена"
+  },
+  "BookExperience": {
+    "openBook": "Открыть книгу",
+    "skipIntro": "Пропустить",
+    "chapterWelcome": "Добро пожаловать",
+    "chapterCurrent": "Сейчас читаем",
+    "chapterMeetup": "Следующая встреча",
+    "chapterHow": "Как это работает",
+    "chapterGallery": "Галерея",
+    "chapterInstagram": "Instagram",
+    "contents": "Содержание",
+    "pageOf": "Страница {page} из {total}"
   }
 }

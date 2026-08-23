@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { SectionHeading } from "@/components/ui/section-heading";
+import { BookShell } from "@/components/book/book-shell";
+import { BookPage } from "@/components/book/book-page";
+import { PaperTexture } from "@/components/book/paper-texture";
 import { getEditablePage } from "@/lib/data/pages";
 import { markdownToHtml } from "@/lib/markdown";
 import { routing } from "@/i18n/routing";
@@ -54,12 +57,49 @@ export default async function AboutPage({ params }: PageProps) {
   const html = markdownToHtml(content);
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
-      <SectionHeading title={title} />
-      <article
-        className="prose-bla mt-10"
-        dangerouslySetInnerHTML={{ __html: html }}
-      />
-    </div>
+    <BookShell>
+      <BookPage chapterTitle={title} pageNumber="iii" side="left">
+        {/* Ex libris bookplate */}
+        <div className="ex-libris relative mx-auto mb-10 max-w-sm overflow-hidden rounded-sm border-2 border-double border-ink/25 bg-paper px-6 py-5 text-center shadow-[var(--shadow-soft)]">
+          <PaperTexture className="opacity-[0.05]" />
+          <div className="relative z-[1]">
+            <p className="font-display text-[10px] uppercase tracking-[0.25em] text-ink-muted">
+              {t("bookplate")}
+            </p>
+            <div className="mx-auto mt-3 flex justify-center">
+              <Image
+                src="/logo.png"
+                alt=""
+                width={64}
+                height={64}
+                className="h-14 w-auto object-contain opacity-90"
+              />
+            </div>
+            <p className="mt-3 font-display text-sm italic leading-snug text-ink">
+              {t("belongsTo")}
+            </p>
+          </div>
+        </div>
+
+        <div className="relative lg:pr-36">
+          <article
+            className="prose-bla about-dropcap columns-1 gap-8 text-ink md:columns-2"
+            dangerouslySetInnerHTML={{ __html: html }}
+          />
+
+          {/* margin annotation — bilingual tip */}
+          <aside
+            className="margin-note mt-8 max-w-xs font-display text-sm italic text-ink-muted lg:absolute lg:right-0 lg:top-4 lg:mt-0 lg:w-32 lg:rotate-[-2deg]"
+            aria-label={t("languages")}
+          >
+            <span
+              aria-hidden
+              className="mb-1 block h-px w-8 bg-ink/20 lg:mx-0"
+            />
+            {t("bilingualNote")}
+          </aside>
+        </div>
+      </BookPage>
+    </BookShell>
   );
 }

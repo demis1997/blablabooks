@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { BooksBrowser } from "@/components/books/books-browser";
-import { SectionHeading } from "@/components/ui/section-heading";
+import { BookShell } from "@/components/book/book-shell";
+import { BookPage } from "@/components/book/book-page";
 import { listBooks, type BookSort } from "@/lib/data/books";
 import { routing } from "@/i18n/routing";
 import type { BookStatus } from "@/types/database";
@@ -76,9 +77,9 @@ export default async function BooksPage({ params, searchParams }: PageProps) {
   const t = await getTranslations({ locale, namespace: "Books" });
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
-      <SectionHeading title={t("title")} description={t("subtitle")} />
-      <div className="mt-10">
+    <BookShell>
+      <BookPage chapterTitle={t("title")} pageNumber="i" side="left">
+        <p className="mb-8 max-w-2xl text-ink-muted">{t("subtitle")}</p>
         <BooksBrowser
           initialBooks={result.books}
           total={result.total}
@@ -87,7 +88,7 @@ export default async function BooksPage({ params, searchParams }: PageProps) {
           initialStatus={status ?? ""}
           initialSort={sort}
         />
-      </div>
-    </div>
+      </BookPage>
+    </BookShell>
   );
 }

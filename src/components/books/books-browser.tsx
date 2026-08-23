@@ -6,9 +6,10 @@ import { Search } from "lucide-react";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { BookCard } from "@/components/books/book-card";
 import { BookDetailDialog } from "@/components/books/book-detail-dialog";
+import { PaperCard } from "@/components/book/paper-card";
+import { PaperTexture } from "@/components/book/paper-texture";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
-import { Input } from "@/components/ui/input";
 import type { Book, BookStatus } from "@/types/database";
 import type { BookSort } from "@/lib/data/books";
 import { cn } from "@/lib/utils";
@@ -26,6 +27,8 @@ const SORTS: Array<{ value: BookSort; labelKey: string }> = [
   { value: "author", labelKey: "sorts.author" },
   { value: "page_count", labelKey: "sorts.pageCount" },
 ];
+
+const FILTER_ROTATES = [-1.2, 0.8, -0.6, 1.1] as const;
 
 export type BooksBrowserProps = {
   initialBooks: Book[];
@@ -110,25 +113,34 @@ export function BooksBrowser({
 
   return (
     <div className={cn(isPending && "opacity-80 transition-opacity")}>
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="relative w-full max-w-md">
-          <Search
-            className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-muted"
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        {/* catalogue search slip */}
+        <div className="relative w-full max-w-md overflow-hidden rounded-lg border border-ink/12 bg-paper shadow-[var(--shadow-soft)]">
+          <PaperTexture className="opacity-[0.035]" />
+          <div
             aria-hidden
+            className="pointer-events-none absolute inset-y-0 left-0 w-1.5 bg-gradient-to-b from-blush/70 via-powder/50 to-sage/60"
           />
-          <Input
-            value={search}
-            onChange={(e) => {
-              const value = e.target.value;
-              setSearch(value);
-              setVisibleCount(pageSize);
-              syncUrl({ search: value });
-            }}
-            placeholder={t("searchPlaceholder")}
-            className="pl-9"
-            aria-label={t("searchPlaceholder")}
-          />
+          <div className="relative z-[1] flex items-center gap-2 px-3 py-2.5 pl-4">
+            <Search
+              className="h-4 w-4 shrink-0 text-ink-muted"
+              aria-hidden
+            />
+            <input
+              value={search}
+              onChange={(e) => {
+                const value = e.target.value;
+                setSearch(value);
+                setVisibleCount(pageSize);
+                syncUrl({ search: value });
+              }}
+              placeholder={t("searchPlaceholder")}
+              aria-label={t("searchPlaceholder")}
+              className="w-full bg-transparent font-display text-sm text-ink placeholder:text-ink-muted/70 focus:outline-none"
+            />
+          </div>
         </div>
+
         <div className="flex flex-wrap items-center gap-2">
           <label className="sr-only" htmlFor="books-sort">
             {t("sortBy")}
@@ -141,7 +153,7 @@ export function BooksBrowser({
               setSort(value);
               syncUrl({ sort: value });
             }}
-            className="h-10 rounded-xl border border-ink/15 bg-paper px-3 text-sm text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-powder"
+            className="h-10 rounded-lg border border-ink/15 bg-paper px-3 font-display text-sm text-ink shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-powder"
           >
             {SORTS.map((option) => (
               <option key={option.value} value={option.value}>
@@ -152,12 +164,13 @@ export function BooksBrowser({
         </div>
       </div>
 
+      {/* library index-card filters */}
       <div
-        className="mt-5 flex flex-wrap gap-2"
+        className="mt-5 flex flex-wrap gap-2.5"
         role="tablist"
         aria-label={t("title")}
       >
-        {FILTERS.map((filter) => {
+        {FILTERS.map((filter, i) => {
           const active = status === filter.value;
           return (
             <button
@@ -170,14 +183,26 @@ export function BooksBrowser({
                 setVisibleCount(pageSize);
                 syncUrl({ status: filter.value });
               }}
-              className={cn(
-                "rounded-full px-4 py-1.5 text-sm transition-colors",
-                active
-                  ? "bg-ink text-paper"
-                  : "bg-paper/80 text-ink-muted ring-1 ring-ink/10 hover:bg-blush/40 hover:text-ink",
-              )}
+              className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-powder focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
             >
-              {t(filter.labelKey)}
+              <PaperCard
+                rotate={FILTER_ROTATES[i % FILTER_ROTATES.length]}
+                className={cn(
+                  "rounded-md px-3.5 py-1.5 transition-shadow",
+                  active
+                    ? "bg-ink text-paper shadow-md ring-1 ring-ink/20"
+                    : "hover:shadow-md",
+                )}
+              >
+                <span
+                  className={cn(
+                    "font-display text-sm tracking-wide",
+                    active ? "text-paper" : "text-ink-muted",
+                  )}
+                >
+                  {t(filter.labelKey)}
+                </span>
+              </PaperCard>
             </button>
           );
         })}
@@ -189,10 +214,14 @@ export function BooksBrowser({
         </div>
       ) : (
         <>
-          <ul className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-            {visible.map((book) => (
+          <ul className="mt-8 grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+            {visible.map((book, i) => (
               <li key={book.id}>
-                <BookCard book={book} onSelect={setSelected} />
+                <BookCard
+                  book={book}
+                  onSelect={setSelected}
+                  index={i}
+                />
               </li>
             ))}
           </ul>
@@ -206,7 +235,7 @@ export function BooksBrowser({
               </Button>
             </div>
           ) : null}
-          <p className="mt-4 text-center text-sm text-ink-muted">
+          <p className="mt-4 text-center font-display text-sm text-ink-muted">
             {visible.length} / {filtered.length || total}
           </p>
         </>

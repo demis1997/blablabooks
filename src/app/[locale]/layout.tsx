@@ -5,6 +5,8 @@ import { notFound } from "next/navigation";
 import { Fraunces, Source_Sans_3 } from "next/font/google";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
+import { PageTurnTransition } from "@/components/book/page-turn-transition";
+import { PublicExperience } from "@/components/providers/public-experience";
 import { ToasterProvider } from "@/components/ui/toaster-provider";
 import { routing } from "@/i18n/routing";
 import { SITE_NAME } from "@/lib/constants";
@@ -85,10 +87,14 @@ export default async function LocaleLayout({
     >
       <body className="min-h-full flex flex-col font-sans antialiased">
         <NextIntlClientProvider messages={messages}>
-          <SiteHeader />
-          <main className="flex-1 w-full">{children}</main>
-          <SiteFooter />
-          <ToasterProvider />
+          <PublicExperience>
+            <SiteHeader />
+            <main className="flex-1 w-full">
+              <PageTurnTransition>{children}</PageTurnTransition>
+            </main>
+            <SiteFooter />
+            <ToasterProvider />
+          </PublicExperience>
         </NextIntlClientProvider>
       </body>
     </html>
