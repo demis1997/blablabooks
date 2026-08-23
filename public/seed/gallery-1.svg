@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600" role="img" aria-label="Abstract book club scene">
+  <rect width="800" height="600" fill="#FFF9F3"/>
+  <circle cx="120" cy="100" r="90" fill="#F3CDD5" opacity="0.55"/>
+  <circle cx="680" cy="520" r="110" fill="#CFE4F2" opacity="0.5"/>
+  <rect x="180" y="160" width="140" height="200" rx="10" fill="#DDD3F1" transform="rotate(-6 250 260)"/>
+  <rect x="300" y="140" width="150" height="220" rx="10" fill="#DDE8D5" transform="rotate(4 375 250)"/>
+  <rect x="440" y="170" width="130" height="190" rx="10" fill="#F5E4A8" transform="rotate(-3 505 265)"/>
+  <ellipse cx="400" cy="420" rx="220" ry="28" fill="#302C35" opacity="0.06"/>
+  <circle cx="560" cy="180" r="8" fill="#F3CDD5"/>
+  <circle cx="580" cy="200" r="5" fill="#CFE4F2"/>
+  <path d="M200 480 Q400 440 600 490" fill="none" stroke="#302C35" stroke-opacity="0.12" stroke-width="2" stroke-linecap="round"/>
+</svg>

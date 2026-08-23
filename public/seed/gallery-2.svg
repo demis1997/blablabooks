@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600" role="img" aria-label="Discussion circle placeholder">
+  <rect width="800" height="600" fill="#FFFCFA"/>
+  <circle cx="400" cy="300" r="160" fill="#CFE4F2" opacity="0.45"/>
+  <circle cx="400" cy="300" r="100" fill="#FFF9F3"/>
+  <circle cx="280" cy="240" r="36" fill="#F3CDD5"/>
+  <circle cx="520" cy="240" r="36" fill="#DDD3F1"/>
+  <circle cx="250" cy="360" r="36" fill="#DDE8D5"/>
+  <circle cx="550" cy="360" r="36" fill="#F5E4A8"/>
+  <circle cx="400" cy="200" r="36" fill="#CFE4F2"/>
+  <rect x="360" y="280" width="80" height="56" rx="6" fill="#302C35" opacity="0.12"/>
+  <path d="M120 520 C220 480 320 540 400 500 C480 460 580 520 680 490" fill="none" stroke="#F3CDD5" stroke-width="14" stroke-linecap="round" opacity="0.7"/>
+</svg>

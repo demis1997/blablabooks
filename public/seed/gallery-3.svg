@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600" role="img" aria-label="Stack of books placeholder">
+  <rect width="800" height="600" fill="#FFF9F3"/>
+  <rect x="0" y="420" width="800" height="180" fill="#DDE8D5" opacity="0.35"/>
+  <rect x="200" y="340" width="400" height="48" rx="6" fill="#F3CDD5"/>
+  <rect x="220" y="288" width="360" height="48" rx="6" fill="#CFE4F2"/>
+  <rect x="240" y="236" width="320" height="48" rx="6" fill="#DDD3F1"/>
+  <rect x="260" y="184" width="280" height="48" rx="6" fill="#F5E4A8"/>
+  <circle cx="640" cy="140" r="48" fill="#F3CDD5" opacity="0.6"/>
+  <path d="M150 160 Q180 120 210 160" fill="none" stroke="#302C35" stroke-opacity="0.2" stroke-width="2" stroke-linecap="round"/>
+  <path d="M165 150 Q180 130 195 150" fill="none" stroke="#302C35" stroke-opacity="0.2" stroke-width="2" stroke-linecap="round"/>
+</svg>
