@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, useTransition } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { Loader2, Search } from "lucide-react";
 import type { BookSearchResult } from "@/types/database";
 import { BookCover } from "@/components/books/book-cover";
@@ -28,25 +28,28 @@ export function BookSearchCombobox({
   className,
   disabled = false,
 }: BookSearchComboboxProps) {
+  const listId = useId();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<BookSearchResult[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
-  const [open, setOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
+  const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [lockedTitle, setLockedTitle] = useState<string | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const requestIdRef = useRef(0);
 
   const fetchPage = useCallback(
-    async (q: string, pageNum: number, append: boolean) => {
+    async (q: string, pageNum: number, append: boolean, requestId: number) => {
       abortRef.current?.abort();
       const controller = new AbortController();
       abortRef.current = controller;
 
       const res = await fetch(
-        `/api/books/search?q=${encodeURIComponent(q)}&page=${pageNum}&limit=12`,
+        `/api/books/search?q=${encodeURIComponent(q)}&page=${pageNum}&limit=8`,
         { signal: controller.signal },
       );
       const data = (await res.json()) as {
@@ -58,43 +61,51 @@ export function BookSearchCombobox({
       if (!res.ok) {
         throw new Error(data.error ?? "Search failed");
       }
+      if (requestId !== requestIdRef.current) return;
 
       setTotal(data.total);
       setResults((prev) => (append ? [...prev, ...data.results] : data.results));
       setPage(pageNum);
-      setOpen(true);
     },
     [],
   );
 
   const trimmedQuery = query.trim();
-  const canSearch = trimmedQuery.length >= 2;
+  const canSearch =
+    trimmedQuery.length >= 2 && lockedTitle !== trimmedQuery;
   const visibleResults = canSearch ? results : [];
-  const dropdownOpen = canSearch && open;
+  const dropdownOpen = canSearch && menuOpen;
   const hasMore = canSearch && visibleResults.length < total;
 
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
+    abortRef.current?.abort();
+
     if (!canSearch) {
-      abortRef.current?.abort();
+      requestIdRef.current += 1;
       return;
     }
 
     const q = trimmedQuery;
     debounceRef.current = setTimeout(() => {
-      startTransition(() => {
-        void (async () => {
-          try {
-            setError(null);
-            await fetchPage(q, 1, false);
-          } catch (e) {
-            if (e instanceof DOMException && e.name === "AbortError") return;
-            setError(e instanceof Error ? e.message : "Search failed");
-            setResults([]);
-          }
-        })();
-      });
-    }, 300);
+      requestIdRef.current += 1;
+      const requestId = requestIdRef.current;
+      setLoading(true);
+      setMenuOpen(true);
+      setError(null);
+      void (async () => {
+        try {
+          await fetchPage(q, 1, false, requestId);
+        } catch (e) {
+          if (e instanceof DOMException && e.name === "AbortError") return;
+          if (requestId !== requestIdRef.current) return;
+          setError(e instanceof Error ? e.message : "Search failed");
+          setResults([]);
+        } finally {
+          if (requestId === requestIdRef.current) setLoading(false);
+        }
+      })();
+    }, 150);
 
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -104,8 +115,10 @@ export function BookSearchCombobox({
   const loadMore = async () => {
     if (!canSearch || loadingMore || disabled) return;
     setLoadingMore(true);
+    requestIdRef.current += 1;
+    const requestId = requestIdRef.current;
     try {
-      await fetchPage(trimmedQuery, page + 1, true);
+      await fetchPage(trimmedQuery, page + 1, true, requestId);
     } catch (e) {
       if (!(e instanceof DOMException && e.name === "AbortError")) {
         setError(e instanceof Error ? e.message : "Search failed");
@@ -115,31 +128,68 @@ export function BookSearchCombobox({
     }
   };
 
+  const choose = (result: BookSearchResult) => {
+    setLockedTitle(result.title);
+    onSelect(result);
+    setQuery(result.title);
+    setResults([]);
+    setError(null);
+    setLoading(false);
+    setMenuOpen(false);
+  };
+
   return (
     <div className={cn("relative space-y-2", className)}>
       {labels.label ? (
-        <label className="text-sm font-medium text-ink">{labels.label}</label>
+        <label className="text-sm font-medium text-ink" htmlFor={listId}>
+          {labels.label}
+        </label>
       ) : null}
       <div className="relative">
         <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink-muted" />
         <Input
+          id={listId}
+          type="text"
+          inputMode="search"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => {
+            setLockedTitle(null);
+            setQuery(e.target.value);
+          }}
+          onKeyDown={(e) => {
+            if (e.key !== "Enter") return;
+            e.preventDefault();
+            if (visibleResults[0]) choose(visibleResults[0]);
+          }}
           placeholder={labels.placeholder}
           className="pl-9"
           autoComplete="off"
+          autoCorrect="off"
+          autoCapitalize="off"
+          spellCheck={false}
+          enterKeyHint="search"
           disabled={disabled}
         />
-        {isPending ? (
+        {canSearch && loading ? (
           <Loader2 className="absolute right-3 top-1/2 size-4 -translate-y-1/2 animate-spin text-ink-muted" />
         ) : null}
       </div>
 
-      {error ? <p className="text-sm text-red-700">{error}</p> : null}
+      {error && !dropdownOpen ? (
+        <p className="text-sm text-red-700">{error}</p>
+      ) : null}
 
       {dropdownOpen ? (
-        <div className="z-20 max-h-96 overflow-auto rounded-2xl border border-ink/10 bg-paper shadow-soft">
-          {visibleResults.length === 0 && !isPending ? (
+        <div className="absolute z-20 mt-1 max-h-96 w-full overflow-auto rounded-2xl border border-ink/10 bg-paper shadow-soft">
+          {error ? (
+            <p className="p-4 text-sm text-red-700">{error}</p>
+          ) : visibleResults.length === 0 && loading ? (
+            <div className="space-y-2 p-4" aria-hidden>
+              <div className="h-12 animate-pulse rounded-md bg-ink/5" />
+              <div className="h-12 animate-pulse rounded-md bg-ink/5" />
+              <div className="h-12 animate-pulse rounded-md bg-ink/5" />
+            </div>
+          ) : visibleResults.length === 0 && !loading ? (
             <p className="p-4 text-sm text-ink-muted">{labels.noResults}</p>
           ) : (
             <ul className="divide-y divide-ink/8">
@@ -149,11 +199,7 @@ export function BookSearchCombobox({
                     type="button"
                     className="flex w-full gap-3 p-3 text-left transition-colors hover:bg-ink/5 disabled:opacity-60"
                     disabled={disabled}
-                    onClick={() => {
-                      onSelect(result);
-                      setOpen(false);
-                      setQuery(result.title);
-                    }}
+                    onClick={() => choose(result)}
                   >
                     <div className="w-12 shrink-0">
                       <BookCover
@@ -188,7 +234,7 @@ export function BookSearchCombobox({
               ))}
             </ul>
           )}
-          {hasMore ? (
+          {hasMore && !error ? (
             <div className="border-t border-ink/8 p-2">
               <Button
                 type="button"

@@ -18,8 +18,8 @@ export async function GET(request: Request) {
     const { results, total } = await searchBooks(q, {
       page,
       limit,
-      enrichPageCount: true,
-      includeGoogleFallback: true,
+      enrichPageCount: false,
+      includeGoogleFallback: false,
     });
     return NextResponse.json({ results, total, page, limit });
   } catch (e) {
