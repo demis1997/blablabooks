@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { X } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { INSTAGRAM_URL } from "@/lib/constants";
 import { Instagram } from "@/components/brand/decorative";
-import { Wordmark } from "@/components/brand/wordmark";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { Button } from "@/components/ui/button";
 import { motionTokens } from "@/lib/motion/tokens";
@@ -29,6 +29,11 @@ export function MobileNav({ open, onOpenChange, items }: MobileNavProps) {
   const t = useTranslations("Nav");
   const tBook = useTranslations("BookExperience");
   const reduceMotion = useReducedMotion();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -48,17 +53,19 @@ export function MobileNav({ open, onOpenChange, items }: MobileNavProps) {
     return () => window.removeEventListener("keydown", onKey);
   }, [open, onOpenChange]);
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <AnimatePresence>
       {open ? (
         <div
           key="mobile-nav"
-          className="fixed inset-0 z-[80] lg:hidden"
+          className="fixed inset-0 z-[200] lg:hidden"
           id="mobile-nav"
         >
           <motion.button
             type="button"
-            className="absolute inset-0 bg-ink/40"
+            className="absolute inset-0 bg-ink/45"
             aria-label={t("close")}
             initial={reduceMotion ? { opacity: 1 } : { opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -71,20 +78,12 @@ export function MobileNav({ open, onOpenChange, items }: MobileNavProps) {
             role="dialog"
             aria-modal="true"
             aria-label={t("menu")}
-            className="absolute inset-y-0 right-0 flex w-[min(100%,20rem)] flex-col overflow-hidden border-l border-ink/10 bg-paper shadow-soft"
-            initial={
-              reduceMotion
-                ? { x: 0 }
-                : { x: "100%", rotate: 1.5, transformOrigin: "right center" }
-            }
-            animate={{ x: 0, rotate: 0 }}
-            exit={
-              reduceMotion
-                ? { x: "100%" }
-                : { x: "100%", rotate: 1.5, transformOrigin: "right center" }
-            }
+            className="absolute inset-y-0 right-0 flex h-[100dvh] w-[min(100%,20rem)] flex-col border-l border-ink/10 bg-paper pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] shadow-soft"
+            initial={reduceMotion ? { x: 0 } : { x: "100%" }}
+            animate={{ x: 0 }}
+            exit={reduceMotion ? { x: "100%" } : { x: "100%" }}
             transition={{
-              duration: motionTokens.duration.page * 0.7,
+              duration: motionTokens.duration.page * 0.55,
               ease: motionTokens.ease.paper,
             }}
           >
@@ -93,18 +92,15 @@ export function MobileNav({ open, onOpenChange, items }: MobileNavProps) {
               className="paper-grain pointer-events-none absolute inset-0 opacity-[0.035]"
             />
 
-            <div className="relative z-[1] flex items-center justify-between gap-3 border-b border-ink/8 px-4 py-4">
-              <div>
-                <p className="font-display text-xs font-semibold tracking-wide text-ink-muted">
-                  {tBook("contents")}
-                </p>
-                <Wordmark showUnderline={false} className="mt-1 text-lg" />
-              </div>
+            <div className="relative z-[1] flex shrink-0 items-center justify-between gap-3 border-b border-ink/8 px-4 py-4">
+              <p className="font-display text-sm font-semibold tracking-wide text-ink">
+                {tBook("contents")}
+              </p>
               <Button
                 type="button"
                 variant="ghost"
                 size="icon"
-                className="relative z-[1] min-h-11 min-w-11"
+                className="min-h-11 min-w-11"
                 aria-label={t("close")}
                 onClick={() => onOpenChange(false)}
               >
@@ -112,12 +108,12 @@ export function MobileNav({ open, onOpenChange, items }: MobileNavProps) {
               </Button>
             </div>
 
-            <nav className="relative z-[1] flex flex-1 flex-col gap-1 overflow-y-auto px-4 py-5">
+            <nav className="relative z-[1] flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto px-4 py-5">
               {items.map((item, index) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="group flex min-h-11 items-baseline gap-1 rounded-lg px-1 py-2.5 text-base font-medium text-ink transition-colors hover:bg-powder/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-powder"
+                  className="flex min-h-12 items-baseline gap-1 rounded-lg px-1 py-3 text-lg font-medium text-ink transition-colors hover:bg-powder/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-powder"
                   onClick={() => onOpenChange(false)}
                 >
                   <span className="font-display shrink-0">{item.label}</span>
@@ -135,7 +131,7 @@ export function MobileNav({ open, onOpenChange, items }: MobileNavProps) {
                 href={INSTAGRAM_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-2 inline-flex min-h-11 items-center gap-2 rounded-lg px-1 py-2.5 text-base font-medium text-ink transition-colors hover:bg-blush/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-powder"
+                className="mt-2 inline-flex min-h-12 items-center gap-2 rounded-lg px-1 py-3 text-lg font-medium text-ink transition-colors hover:bg-blush/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-powder"
                 onClick={() => onOpenChange(false)}
               >
                 <Instagram className="size-4" aria-hidden />
@@ -143,12 +139,13 @@ export function MobileNav({ open, onOpenChange, items }: MobileNavProps) {
               </a>
             </nav>
 
-            <div className="relative z-[1] border-t border-ink/8 px-4 py-4">
+            <div className="relative z-[1] shrink-0 border-t border-ink/8 px-4 py-4">
               <LanguageSwitcher className="w-full justify-center" />
             </div>
           </motion.div>
         </div>
       ) : null}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   );
 }

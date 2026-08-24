@@ -88,7 +88,7 @@ export function SiteHeader() {
           </div>
           <button
             type="button"
-            className="relative z-[80] inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl text-ink hover:bg-ink/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-powder focus-visible:ring-offset-2 focus-visible:ring-offset-cream lg:hidden"
+            className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl text-ink hover:bg-ink/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-powder focus-visible:ring-offset-2 focus-visible:ring-offset-cream lg:hidden"
             aria-expanded={mobileOpen}
             aria-controls="mobile-nav"
             aria-label={t("menu")}
