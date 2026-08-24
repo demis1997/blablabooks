@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { RandomizerExperience } from "@/components/randomizer/randomizer-experience";
+import { PublicRandomizer } from "@/components/randomizer/public-randomizer";
 import { PopupBook } from "@/components/library/popup-book";
-import { EmptyState } from "@/components/ui/empty-state";
 import { getCandidateBooks } from "@/lib/data/books";
 import { getSiteSettings } from "@/lib/data/settings";
 import { routing } from "@/i18n/routing";
@@ -42,14 +41,10 @@ export default async function RandomizerPage({ params }: PageProps) {
 
   return (
     <PopupBook title={t("title")} subtitle={t("subtitle")}>
-      {!settings.public_randomizer_enabled ? (
-        <EmptyState
-          title={t("publicDisabled")}
-          description={t("adminOnly")}
-        />
-      ) : (
-        <RandomizerExperience eligibleBooks={candidates} displayOnly />
-      )}
+      <PublicRandomizer
+        initialBooks={candidates}
+        enabled={settings.public_randomizer_enabled}
+      />
     </PopupBook>
   );
 }

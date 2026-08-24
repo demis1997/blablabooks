@@ -9,14 +9,23 @@ export function hashIp(ip: string): string {
   return createHash("sha256").update(ip).digest("hex").slice(0, 32);
 }
 
-export function isRateLimited(ipHash: string, now = Date.now()): boolean {
-  const stamps = (memory.get(ipHash) ?? []).filter((t) => now - t < WINDOW_MS);
+export function isRateLimited(
+  ipHash: string,
+  now = Date.now(),
+  max = MAX_ATTEMPTS,
+  windowMs = WINDOW_MS,
+): boolean {
+  const stamps = (memory.get(ipHash) ?? []).filter((t) => now - t < windowMs);
   memory.set(ipHash, stamps);
-  return stamps.length >= MAX_ATTEMPTS;
+  return stamps.length >= max;
 }
 
-export function recordAttempt(ipHash: string, now = Date.now()): void {
-  const stamps = (memory.get(ipHash) ?? []).filter((t) => now - t < WINDOW_MS);
+export function recordAttempt(
+  ipHash: string,
+  now = Date.now(),
+  windowMs = WINDOW_MS,
+): void {
+  const stamps = (memory.get(ipHash) ?? []).filter((t) => now - t < windowMs);
   stamps.push(now);
   memory.set(ipHash, stamps);
 }

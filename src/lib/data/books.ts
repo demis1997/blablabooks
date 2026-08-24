@@ -1,5 +1,9 @@
 import type { Book, BookStatus } from "@/types/database";
-import { isSupabaseConfigured } from "@/lib/supabase/env";
+import {
+  hasSupabaseServiceRole,
+  isSupabaseConfigured,
+} from "@/lib/supabase/env";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient, createClientOrThrow } from "@/lib/supabase/server";
 import {
   getDemoBooks,
@@ -215,6 +219,27 @@ export async function getCandidateBooks(): Promise<Book[]> {
   return books;
 }
 
+export async function listBooksForDuplicateCheck(): Promise<Book[]> {
+  if (!isSupabaseConfigured()) {
+    return getDemoBooks();
+  }
+
+  if (hasSupabaseServiceRole()) {
+    const supabase = createAdminClient();
+    const { data, error } = await supabase.from("books").select("*");
+    if (error) {
+      throw new Error(`Failed to list books: ${error.message}`);
+    }
+    return (data ?? []) as Book[];
+  }
+
+  const { books } = await listBooks({
+    includeArchived: true,
+    pageSize: 100,
+  });
+  return books;
+}
+
 export async function createBook(input: CreateBookInput): Promise<Book> {
   const normalized_title = normalizeTitle(input.title);
   const normalized_authors = normalizeAuthors(input.authors);
@@ -280,6 +305,76 @@ export async function createBook(input: CreateBookInput): Promise<Book> {
 
   if (error) {
     throw new Error(`Failed to create book: ${error.message}`);
+  }
+
+  return data as Book;
+}
+
+export async function createCandidateBookTrusted(
+  input: CreateBookInput,
+): Promise<Book> {
+  const candidate: CreateBookInput = {
+    ...input,
+    status: "candidate",
+    selected_month: null,
+    selected_year: null,
+  };
+
+  if (!isSupabaseConfigured()) {
+    return createBook(candidate);
+  }
+
+  if (!hasSupabaseServiceRole()) {
+    throw new Error("Book suggestions are unavailable.");
+  }
+
+  const normalized_title = normalizeTitle(candidate.title);
+  const normalized_authors = normalizeAuthors(candidate.authors);
+  const supabase = createAdminClient();
+  const { data, error } = await supabase
+    .from("books")
+    .insert({
+      ...candidate,
+      normalized_title,
+      normalized_authors,
+      is_archived: false,
+    })
+    .select("*")
+    .single();
+
+  if (error) {
+    throw new Error(`Failed to create book: ${error.message}`);
+  }
+
+  return data as Book;
+}
+
+export async function restoreBookToCandidateTrusted(id: string): Promise<Book> {
+  if (!isSupabaseConfigured()) {
+    return updateBook({
+      id,
+      status: "candidate",
+      is_archived: false,
+    });
+  }
+
+  if (!hasSupabaseServiceRole()) {
+    throw new Error("Book suggestions are unavailable.");
+  }
+
+  const supabase = createAdminClient();
+  const { data, error } = await supabase
+    .from("books")
+    .update({
+      status: "candidate",
+      is_archived: false,
+    })
+    .eq("id", id)
+    .select("*")
+    .single();
+
+  if (error) {
+    throw new Error(`Failed to restore book: ${error.message}`);
   }
 
   return data as Book;
