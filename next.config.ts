@@ -28,7 +28,15 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "images-na.ssl-images-amazon.com",
+        hostname: "**.cdninstagram.com",
+      },
+      {
+        protocol: "https",
+        hostname: "**.fbcdn.net",
+      },
+      {
+        protocol: "https",
+        hostname: "scontent.cdninstagram.com",
       },
     ],
   },

@@ -4,6 +4,7 @@ import {
   getDemoGallery,
   mutateDemoStore,
 } from "@/lib/demo-data";
+import { fetchInstagramGallery, isInstagramConfigured } from "@/lib/instagram";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { createClient } from "@/lib/supabase/server";
 import type { GalleryImageMetadataInput } from "@/lib/validations/book";
@@ -13,7 +14,7 @@ export type ListGalleryOptions = {
   featuredOnly?: boolean;
 };
 
-export async function listGalleryImages(
+async function listStoredGalleryImages(
   options: ListGalleryOptions = {},
 ): Promise<GalleryImage[]> {
   if (!isSupabaseConfigured()) {
@@ -57,6 +58,24 @@ export async function listGalleryImages(
   }
 
   return (data ?? []) as GalleryImage[];
+}
+
+export async function listGalleryImages(
+  options: ListGalleryOptions = {},
+): Promise<GalleryImage[]> {
+  const stored = await listStoredGalleryImages(options);
+
+  if (options.includeUnpublished || !isInstagramConfigured()) {
+    return stored;
+  }
+
+  const instagram = await fetchInstagramGallery(24);
+  if (instagram.length === 0) return stored;
+
+  if (options.featuredOnly) {
+    return instagram.filter((img) => img.is_featured);
+  }
+  return instagram;
 }
 
 export async function getGalleryImageById(

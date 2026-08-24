@@ -7,6 +7,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import type { GalleryImage } from "@/types/database";
 import { motionTokens } from "@/lib/motion/tokens";
+import { isInstagramMediaUrl } from "@/lib/instagram";
 import { cn } from "@/lib/utils";
 
 type LightboxProps = {
@@ -151,6 +152,7 @@ export function Lightbox({
                 className="object-contain"
                 sizes="(max-width: 1024px) 100vw, 896px"
                 priority
+                unoptimized={isInstagramMediaUrl(image.public_url)}
               />
             </motion.div>
           </div>

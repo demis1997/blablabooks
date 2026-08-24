@@ -10,6 +10,7 @@ import { PaperCard } from "@/components/book/paper-card";
 import { motionTokens } from "@/lib/motion/tokens";
 import type { GalleryImage } from "@/types/database";
 import { cn } from "@/lib/utils";
+import { isInstagramMediaUrl } from "@/lib/instagram";
 
 type GalleryGridProps = {
   images: GalleryImage[];
@@ -137,6 +138,7 @@ export function GalleryGrid({ images }: GalleryGridProps) {
                         loading="lazy"
                         className="object-cover"
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        unoptimized={isInstagramMediaUrl(image.public_url)}
                       />
                     </motion.span>
 

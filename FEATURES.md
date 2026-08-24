@@ -37,6 +37,7 @@ Configure these before production:
 | Migration `001_initial_schema.sql` | Schema, RLS, buckets, About seed |
 | First admin (`profiles.is_admin`) | Admin dashboard access |
 | `GOOGLE_BOOKS_API_KEY` (optional) | Better page counts / search fallback |
+| `INSTAGRAM_ACCESS_TOKEN` (optional) | Live gallery from @bla.bla.books.cy via Graph API |
 | Vercel env + Auth redirect URLs | Production hosting |
 | Exact Supabase image host (if needed) | `next/image` remotePatterns |
 

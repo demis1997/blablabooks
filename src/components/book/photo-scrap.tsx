@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { isInstagramMediaUrl } from "@/lib/instagram";
+
 
 type PhotoScrapProps = {
   src: string;
@@ -62,6 +64,7 @@ export function PhotoScrap({
           fill
           className="object-cover"
           sizes={sizes}
+          unoptimized={isInstagramMediaUrl(src)}
         />
       </div>
       {caption ? (

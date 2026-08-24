@@ -18,6 +18,16 @@ Admin demo login: open `/en/admin/login` and use the demo sign-in (sets a cookie
 
 Optional: set `GOOGLE_BOOKS_API_KEY` for richer search / page-count enrichment.
 
+## Instagram gallery
+
+Instagram does **not** allow scraping the public profile. To show live photos from [@bla.bla.books.cy](https://www.instagram.com/bla.bla.books.cy/):
+
+1. Convert the account to a Professional (Business/Creator) account.
+2. Create a Meta app with **Instagram API** access and generate a long-lived token.
+3. Set `INSTAGRAM_ACCESS_TOKEN` (and optionally `INSTAGRAM_USER_ID`) in `.env.local` and Vercel.
+
+Until those are set, the gallery uses uploaded/demo photos and still links to Instagram.
+
 ## Supabase setup
 
 1. Create a project at [supabase.com](https://supabase.com).
@@ -99,6 +109,7 @@ Dev dependency `tsx` is used for seed / create-admin scripts.
 - [ ] Run migration `001_initial_schema.sql`
 - [ ] First admin (`is_admin = true`)
 - [ ] Optional: `GOOGLE_BOOKS_API_KEY`
+- [ ] Optional: `INSTAGRAM_ACCESS_TOKEN` (+ `INSTAGRAM_USER_ID`) for live Instagram gallery
 - [ ] Optional: Vercel project + Auth redirect URLs
 - [ ] Optional: exact Supabase image hostname in `next.config.ts` if needed
 

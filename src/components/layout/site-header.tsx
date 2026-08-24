@@ -11,7 +11,6 @@ import { Instagram } from "@/components/brand/decorative";
 import { Wordmark } from "@/components/brand/wordmark";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { MobileNav, type NavItem } from "@/components/layout/mobile-nav";
-import { Button } from "@/components/ui/button";
 
 export function SiteHeader() {
   const t = useTranslations("Nav");
@@ -35,10 +34,10 @@ export function SiteHeader() {
   return (
     <header
       className={cn(
-        "sticky top-0 z-40",
+        "sticky top-0 z-[70]",
         isAdmin
           ? "border-b border-ink/8 bg-cream/95 backdrop-blur-md"
-          : "border-b border-ink/5 bg-cream/70 backdrop-blur-md supports-[backdrop-filter]:bg-cream/55",
+          : "border-b border-ink/5 bg-cream/80 backdrop-blur-md supports-[backdrop-filter]:bg-cream/65",
       )}
     >
       <div
@@ -87,18 +86,16 @@ export function SiteHeader() {
           <div className="hidden sm:block">
             <LanguageSwitcher />
           </div>
-          <Button
+          <button
             type="button"
-            variant="ghost"
-            size="icon"
-            className="lg:hidden"
+            className="relative z-[80] inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl text-ink hover:bg-ink/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-powder focus-visible:ring-offset-2 focus-visible:ring-offset-cream lg:hidden"
             aria-expanded={mobileOpen}
             aria-controls="mobile-nav"
             aria-label={t("menu")}
             onClick={() => setMobileOpen(true)}
           >
-            <Menu className="size-5" />
-          </Button>
+            <Menu className="size-6" />
+          </button>
         </div>
       </div>
 

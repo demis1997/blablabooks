@@ -6,7 +6,6 @@ import { useTranslations } from "next-intl";
 import { X } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { INSTAGRAM_URL } from "@/lib/constants";
-import { cn } from "@/lib/utils";
 import { Instagram } from "@/components/brand/decorative";
 import { Wordmark } from "@/components/brand/wordmark";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
@@ -50,17 +49,14 @@ export function MobileNav({ open, onOpenChange, items }: MobileNavProps) {
   }, [open, onOpenChange]);
 
   return (
-    <div
-      className={cn(
-        "fixed inset-0 z-50 lg:hidden",
-        open ? "pointer-events-auto" : "pointer-events-none",
-      )}
-      aria-hidden={!open}
-    >
-      <AnimatePresence>
-        {open ? (
+    <AnimatePresence>
+      {open ? (
+        <div
+          key="mobile-nav"
+          className="fixed inset-0 z-[80] lg:hidden"
+          id="mobile-nav"
+        >
           <motion.button
-            key="backdrop"
             type="button"
             className="absolute inset-0 bg-ink/40"
             aria-label={t("close")}
@@ -70,14 +66,8 @@ export function MobileNav({ open, onOpenChange, items }: MobileNavProps) {
             transition={{ duration: motionTokens.duration.fast }}
             onClick={() => onOpenChange(false)}
           />
-        ) : null}
-      </AnimatePresence>
 
-      <AnimatePresence>
-        {open ? (
           <motion.div
-            key="panel"
-            id="mobile-nav"
             role="dialog"
             aria-modal="true"
             aria-label={t("menu")}
@@ -114,6 +104,7 @@ export function MobileNav({ open, onOpenChange, items }: MobileNavProps) {
                 type="button"
                 variant="ghost"
                 size="icon"
+                className="relative z-[1] min-h-11 min-w-11"
                 aria-label={t("close")}
                 onClick={() => onOpenChange(false)}
               >
@@ -126,7 +117,7 @@ export function MobileNav({ open, onOpenChange, items }: MobileNavProps) {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="group flex items-baseline gap-1 rounded-lg px-1 py-2.5 text-base font-medium text-ink transition-colors hover:bg-powder/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-powder"
+                  className="group flex min-h-11 items-baseline gap-1 rounded-lg px-1 py-2.5 text-base font-medium text-ink transition-colors hover:bg-powder/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-powder"
                   onClick={() => onOpenChange(false)}
                 >
                   <span className="font-display shrink-0">{item.label}</span>
@@ -144,7 +135,7 @@ export function MobileNav({ open, onOpenChange, items }: MobileNavProps) {
                 href={INSTAGRAM_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-2 inline-flex items-center gap-2 rounded-lg px-1 py-2.5 text-base font-medium text-ink transition-colors hover:bg-blush/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-powder"
+                className="mt-2 inline-flex min-h-11 items-center gap-2 rounded-lg px-1 py-2.5 text-base font-medium text-ink transition-colors hover:bg-blush/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-powder"
                 onClick={() => onOpenChange(false)}
               >
                 <Instagram className="size-4" aria-hidden />
@@ -156,8 +147,8 @@ export function MobileNav({ open, onOpenChange, items }: MobileNavProps) {
               <LanguageSwitcher className="w-full justify-center" />
             </div>
           </motion.div>
-        ) : null}
-      </AnimatePresence>
-    </div>
+        </div>
+      ) : null}
+    </AnimatePresence>
   );
 }
