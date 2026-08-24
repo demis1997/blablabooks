@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useTranslations } from "next-intl";
@@ -25,15 +25,17 @@ interface MobileNavProps {
 
 const DECORATIVE_PAGES = ["03", "07", "11", "15", "19", "23", "27"] as const;
 
+const emptySubscribe = () => () => {};
+
 export function MobileNav({ open, onOpenChange, items }: MobileNavProps) {
   const t = useTranslations("Nav");
   const tBook = useTranslations("BookExperience");
   const reduceMotion = useReducedMotion();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  );
 
   useEffect(() => {
     if (!open) return;
