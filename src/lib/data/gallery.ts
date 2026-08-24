@@ -1,4 +1,4 @@
-import type { GalleryImage } from "@/types/database";
+import type { GalleryImage, GallerySource } from "@/types/database";
 import {
   appendDemoActivity,
   getDemoGallery,
@@ -11,32 +11,36 @@ import type { GalleryImageMetadataInput } from "@/lib/validations/book";
 export type ListGalleryOptions = {
   includeUnpublished?: boolean;
   featuredOnly?: boolean;
+  source?: GallerySource;
 };
+
+function applyClientFilters(
+  images: GalleryImage[],
+  options: ListGalleryOptions,
+): GalleryImage[] {
+  let next = images;
+  if (!options.includeUnpublished) {
+    next = next.filter((img) => img.status === "published");
+  }
+  if (options.featuredOnly) {
+    next = next.filter((img) => img.is_featured);
+  }
+  if (options.source) {
+    next = next.filter((img) => img.source === options.source);
+  }
+  return [...next].sort((a, b) => a.sort_order - b.sort_order);
+}
 
 async function listStoredGalleryImages(
   options: ListGalleryOptions = {},
 ): Promise<GalleryImage[]> {
   if (!isSupabaseConfigured()) {
-    let images = getDemoGallery();
-    if (!options.includeUnpublished) {
-      images = images.filter((img) => img.status === "published");
-    }
-    if (options.featuredOnly) {
-      images = images.filter((img) => img.is_featured);
-    }
-    return [...images].sort((a, b) => a.sort_order - b.sort_order);
+    return applyClientFilters(getDemoGallery(), options);
   }
 
   const supabase = await createClient();
   if (!supabase) {
-    let images = getDemoGallery();
-    if (!options.includeUnpublished) {
-      images = images.filter((img) => img.status === "published");
-    }
-    if (options.featuredOnly) {
-      images = images.filter((img) => img.is_featured);
-    }
-    return [...images].sort((a, b) => a.sort_order - b.sort_order);
+    return applyClientFilters(getDemoGallery(), options);
   }
 
   let query = supabase
@@ -49,6 +53,9 @@ async function listStoredGalleryImages(
   }
   if (options.featuredOnly) {
     query = query.eq("is_featured", true);
+  }
+  if (options.source) {
+    query = query.eq("source", options.source);
   }
 
   const { data, error } = await query;

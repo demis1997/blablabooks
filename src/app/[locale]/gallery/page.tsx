@@ -32,14 +32,13 @@ export default async function GalleryPage({ params }: PageProps) {
   const locale = localeParam as Locale;
   setRequestLocale(locale);
 
-  const images = await listGalleryImages();
+  const images = await listGalleryImages({ source: "instagram" });
   const t = await getTranslations({ locale, namespace: "Gallery" });
-  const fromInstagram = images.some((img) => img.source === "instagram");
 
   return (
     <ScrapbookFrame
-      kicker={fromInstagram ? t("fromInstagram") : t("title")}
-      title={t("subtitle")}
+      kicker={t("fromInstagram")}
+      title={t("title")}
       hint={
         <>
           {t("instagramHint")}{" "}

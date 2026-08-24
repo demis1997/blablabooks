@@ -45,8 +45,6 @@
       "step3Title": "We meet & bla bla",
       "step3Body": "Coffee, conversation, and the kind of book chat that goes longer than planned."
     },
-    "recentGallery": "From recent meetups",
-    "viewAllGallery": "View full gallery",
     "instagramCta": {
       "title": "Come say hi on Instagram",
       "body": "Photos, reminders, and the soft chaos of club life — @bla.bla.books.cy",
@@ -116,12 +114,12 @@
     "watching": "Watch the draw unfold — confirmation is for admins."
   },
   "Gallery": {
-    "title": "Gallery",
-    "subtitle": "Snapshots from meetups, tables full of books, and the in-between moments.",
-    "empty": "No photos yet — our next meetup might change that.",
-    "fromInstagram": "Photos from @bla.bla.books.cy",
+    "title": "Instagram",
+    "subtitle": "Photos from @bla.bla.books.cy",
+    "empty": "No Instagram photos yet — follow the club and check back soon.",
+    "fromInstagram": "From Instagram",
     "openInstagram": "Open Instagram",
-    "instagramHint": "Photos Daria publishes from the admin gallery — including selected Instagram posts. Follow the club on Instagram for more.",
+    "instagramHint": "These are photos from the club’s Instagram. Open the profile for the full feed.",
     "filterYear": "Year",
     "filterEvent": "Event",
     "allYears": "All years",

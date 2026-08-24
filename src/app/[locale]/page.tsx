@@ -14,9 +14,6 @@ import { AnnouncementBanner } from "@/components/home/announcement-banner";
 import { routing } from "@/i18n/routing";
 import type { Locale } from "@/lib/constants";
 
-const GalleryAlbum = dynamic(() =>
-  import("@/components/library/gallery-album").then((m) => m.GalleryAlbum),
-);
 const InstagramZine = dynamic(() =>
   import("@/components/library/instagram-zine").then((m) => m.InstagramZine),
 );
@@ -42,7 +39,7 @@ export default async function HomePage({ params }: PageProps) {
       getCurrentBook(),
       getCandidateBooks(),
       getPublishedAnnouncements(),
-      listGalleryImages(),
+      listGalleryImages({ source: "instagram" }),
       getSiteSettings(),
     ]);
 
@@ -62,7 +59,6 @@ export default async function HomePage({ params }: PageProps) {
         <MeetupDiary announcement={nextMeetup} locale={locale} />
       ) : null}
       <MiniBookStack />
-      <GalleryAlbum images={gallery} locale={locale} />
       <InstagramZine href={settings.instagram_url} photos={gallery} />
       <FinalBookStack />
     </LibraryScene>

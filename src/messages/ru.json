@@ -45,8 +45,6 @@
       "step3Title": "Встречаемся и bla bla",
       "step3Body": "Кофе, разговоры и тот самый книжный треп, который всегда длится дольше, чем планировали."
     },
-    "recentGallery": "С недавних встреч",
-    "viewAllGallery": "Вся галерея",
     "instagramCta": {
       "title": "Загляните в Instagram",
       "body": "Фото, напоминания и лёгкий хаос клубной жизни — @bla.bla.books.cy",
@@ -116,12 +114,12 @@
     "watching": "Смотрите розыгрыш — подтверждение только у админов."
   },
   "Gallery": {
-    "title": "Галерея",
-    "subtitle": "Кадры со встреч, столы с книгами и всё, что между ними.",
-    "empty": "Фотографий пока нет — возможно, следующая встреча это исправит.",
-    "fromInstagram": "Фото из @bla.bla.books.cy",
+    "title": "Instagram",
+    "subtitle": "Фото из @bla.bla.books.cy",
+    "empty": "Пока нет фото из Instagram — загляните в профиль и возвращайтесь позже.",
+    "fromInstagram": "Из Instagram",
     "openInstagram": "Открыть Instagram",
-    "instagramHint": "Фото, которые публикуются из админки — включая выбранные посты Instagram.",
+    "instagramHint": "Эти фото из Instagram клуба. Полная лента — в профиле.",
     "filterYear": "Год",
     "filterEvent": "Событие",
     "allYears": "Все годы",
