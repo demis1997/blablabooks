@@ -90,8 +90,11 @@ export const announcementSchema = z.object({
   end_time: optionalText,
   venue: optionalText,
   address: optionalText,
+  city: optionalText,
   maps_url: optionalUrl,
   image_url: optionalUrl,
+  member_instructions: optionalText,
+  cancelled: z.boolean().optional().default(false),
   publish_at: optionalText,
   expires_at: optionalText,
   is_pinned: z.boolean().optional().default(false),
@@ -112,6 +115,7 @@ export const galleryImageMetadataSchema = z.object({
   status: publishStatusSchema.optional().default("draft"),
   width: z.number().int().positive().nullable().optional(),
   height: z.number().int().positive().nullable().optional(),
+  reviewed: z.boolean().optional(),
 });
 
 export const loginSchema = z.object({

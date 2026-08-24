@@ -2,6 +2,7 @@ import type {
   ActivityLog,
   Announcement,
   Book,
+  InstagramConnectionPublic,
   SiteSettings,
 } from "@/types/database";
 import { getLatestAnnouncement, listAnnouncements } from "./announcements";
@@ -10,6 +11,8 @@ import { getCurrentBook, listBooks } from "./books";
 import { getLatestDraw } from "./draws";
 import { listGalleryImages } from "./gallery";
 import { getSiteSettings } from "./settings";
+import { getInstagramPublicStatus } from "./instagram";
+import { pickNextMeetup } from "@/lib/meetups";
 
 export type AdminOverview = {
   counts: {
@@ -19,10 +22,13 @@ export type AdminOverview = {
     previouslyRead: number;
     archived: number;
     gallery: number;
+    publishedGallery: number;
     announcements: number;
   };
   currentBook: Book | null;
+  nextMeetup: Announcement | null;
   latestAnnouncement: Announcement | null;
+  instagram: InstagramConnectionPublic | null;
   latestDraw: Awaited<ReturnType<typeof getLatestDraw>>;
   recentActivity: ActivityLog[];
   settings: SiteSettings;
@@ -58,6 +64,7 @@ export async function getAdminOverview(): Promise<AdminOverview> {
     latestDraw,
     recentActivity,
     settings,
+    instagram,
   ] = await Promise.all([
     listBooks({ pageSize: 1, includeArchived: true }),
     listBooks({ status: "candidate", pageSize: 1, includeArchived: false }),
@@ -79,6 +86,7 @@ export async function getAdminOverview(): Promise<AdminOverview> {
     getLatestDraw(),
     listActivity({ limit: 10 }),
     getSiteSettings(),
+    getInstagramPublicStatus(),
   ]);
 
   const archivedCount = archived.books.filter((b) => b.is_archived).length;
@@ -91,10 +99,13 @@ export async function getAdminOverview(): Promise<AdminOverview> {
       previouslyRead: previouslyRead.total,
       archived: archivedCount,
       gallery: gallery.length,
+      publishedGallery: gallery.filter((img) => img.status === "published").length,
       announcements: announcements.length,
     },
     currentBook,
+    nextMeetup: pickNextMeetup(announcements),
     latestAnnouncement,
+    instagram,
     latestDraw,
     recentActivity,
     settings,

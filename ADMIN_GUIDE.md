@@ -4,10 +4,18 @@ Short reference for club admins. Public site is EN/RU; admin UI follows the same
 
 ## Sign in
 
-- **Production / Supabase:** `/en/admin/login` with your invited email (magic link / password per Auth settings).
-- **Local demo (no Supabase):** use the demo admin button on the login page.
+- **Production / Supabase:** `/en/admin/login` with the invited owner email and the password Daria chose. Forgot password: `/en/admin/forgot-password`.
+- **Local demo (no Supabase):** demo admin button on the login page.
 
-Only profiles with `is_admin = true` can access the dashboard.
+Only profiles with `is_admin` or `role` `admin` / `owner` can access the dashboard. Daria should be `owner`.
+
+## Instagram
+
+Admin → Instagram. Daria connects `@bla.bla.books.cy` through Meta (never types the Instagram password into this site). Sync imports photos as unpublished until she publishes them. Only the owner can disconnect.
+
+## Meetups
+
+Admin → Meetups. Draft, publish, duplicate. The next future published meetup appears on the homepage.
 
 ## Books
 

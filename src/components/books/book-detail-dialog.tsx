@@ -79,6 +79,9 @@ export function BookDetailDialog({
               className="mx-auto w-[120px] sm:mx-0 sm:w-full"
             />
             <div className="min-w-0 space-y-4">
+              <p className="font-display text-[10px] uppercase tracking-[0.2em] text-ink-muted">
+                {t("catalogueKicker")}
+              </p>
               <DialogHeader className="space-y-3 text-left">
                 <div className="flex flex-wrap items-center gap-2">
                   <BookStatusBadge status={book.status} />

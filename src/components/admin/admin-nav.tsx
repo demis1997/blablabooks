@@ -3,9 +3,11 @@
 import { useTranslations } from "next-intl";
 import {
   BookOpen,
+  CalendarDays,
   Dices,
   GalleryVerticalEnd,
   Import,
+  Camera,
   LayoutDashboard,
   LogOut,
   Megaphone,
@@ -27,7 +29,10 @@ const NAV: Array<{
     | "randomizer"
     | "currentBook"
     | "announcements"
+    | "meetups"
     | "gallery"
+    | "instagram"
+    | "pages"
     | "pages"
     | "settings"
     | "import";
@@ -38,8 +43,10 @@ const NAV: Array<{
   { href: "/admin/books", labelKey: "books", icon: BookOpen },
   { href: "/admin/randomizer", labelKey: "randomizer", icon: Dices },
   { href: "/admin/current-book", labelKey: "currentBook", icon: Bookmark },
+  { href: "/admin/meetups", labelKey: "meetups", icon: CalendarDays },
   { href: "/admin/announcements", labelKey: "announcements", icon: Megaphone },
   { href: "/admin/gallery", labelKey: "gallery", icon: GalleryVerticalEnd },
+  { href: "/admin/instagram", labelKey: "instagram", icon: Camera },
   { href: "/admin/pages", labelKey: "pages", icon: FileText },
   { href: "/admin/settings", labelKey: "settings", icon: Settings },
   { href: "/admin/import", labelKey: "import", icon: Import },

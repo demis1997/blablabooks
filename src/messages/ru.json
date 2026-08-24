@@ -32,8 +32,12 @@
     "nextMeetup": "Следующая встреча",
     "openMaps": "Открыть в картах",
     "addToCalendar": "Добавить в календарь",
+    "downloadIcs": "Скачать файл календаря",
     "howItWorks": {
       "title": "Как это устроено",
+      "pick": "Выбор",
+      "read": "Чтение",
+      "meet": "Встреча",
       "step1Title": "Выбираем книгу",
       "step1Body": "Кандидаты попадают в общий пул. Раз в месяц мы тянем одну книгу — её и читаем все вместе.",
       "step2Title": "Читаем",
@@ -48,7 +52,12 @@
       "body": "Фото, напоминания и лёгкий хаос клубной жизни — @bla.bla.books.cy",
       "button": "Открыть Instagram"
     },
-    "noCurrentBook": "Пока нет текущей книги — загляните чуть позже или посмотрите кандидатов."
+    "noCurrentBook": "Пока нет текущей книги — загляните чуть позже или посмотрите кандидатов.",
+    "thisMonthsRead": "Книга месяца",
+    "seeYouNextChapter": "До следующей главы.",
+    "mapPocket": "Карта",
+    "ticket": "Билет",
+    "closingNav": "Продолжить"
   },
   "Books": {
     "title": "Книги",
@@ -60,6 +69,7 @@
       "previouslyRead": "Прочитанные"
     },
     "searchPlaceholder": "Поиск по названию или автору…",
+    "catalogueKicker": "Каталог",
     "sortBy": "Сортировка",
     "sorts": {
       "dateAdded": "Дата добавления",
@@ -111,7 +121,7 @@
     "empty": "Фотографий пока нет — возможно, следующая встреча это исправит.",
     "fromInstagram": "Фото из @bla.bla.books.cy",
     "openInstagram": "Открыть Instagram",
-    "instagramHint": "Живые фото подтягиваются из Instagram, когда настроен токен Meta. Пока можно смотреть клуб в Instagram.",
+    "instagramHint": "Фото, которые публикуются из админки — включая выбранные посты Instagram.",
     "filterYear": "Год",
     "filterEvent": "Событие",
     "allYears": "Все годы",
@@ -155,7 +165,9 @@
       "randomizer": "Рандомайзер",
       "currentBook": "Текущая книга",
       "announcements": "Анонсы",
+      "meetups": "Встречи",
       "gallery": "Галерея",
+      "instagram": "Instagram",
       "pages": "Страницы",
       "import": "Импорт",
       "settings": "Настройки",
@@ -168,6 +180,10 @@
       "previouslyRead": "Прочитанные",
       "announcements": "Анонсы",
       "galleryImages": "Фото в галерее",
+      "publishedGallery": "Опубликованные фото",
+      "nextMeetup": "Следующая встреча",
+      "instagram": "Instagram",
+      "lastIgSync": "Последняя синхронизация Instagram",
       "recentActivity": "Недавние действия"
     },
     "books": {
@@ -223,7 +239,14 @@
       "title": "Текущая книга",
       "setCurrent": "Сделать текущей",
       "markPreviouslyRead": "Отметить как прочитанную",
-      "none": "Сейчас ничего не отмечено как «читаем»."
+      "none": "Сейчас ничего не отмечено как «читаем».",
+      "methods": "Выберите кандидата ниже или откройте рандомайзер. Анимация не выбирает книгу.",
+      "openRandomizer": "Открыть рандомайзер",
+      "previous": "Прошлые книги месяца",
+      "confirmTitle": "Опубликовать книгу месяца?",
+      "confirmBody": "Это обновит главную страницу. Предыдущая текущая книга будет отмечена как прочитанная.",
+      "replace": "Заменить текущую книгу",
+      "replaceBody": "Снять текущий выбор, чтобы выбрать другую книгу."
     },
     "announcements": {
       "add": "Новый анонс",
@@ -244,7 +267,9 @@
       "endTime": "Конец",
       "venue": "Место",
       "address": "Адрес",
+      "city": "Город",
       "mapsUrl": "Ссылка на карты",
+      "memberInstructions": "Инструкции для участников",
       "imageUrl": "URL изображения",
       "publishAt": "Опубликовать",
       "expiresAt": "Истекает",
@@ -340,8 +365,64 @@
       "signedIn": "Вы вошли",
       "signedOut": "Вы вышли"
     },
-    "duplicateWarning": "Похожая книга, возможно, уже есть в библиотеке.",
-    "overrideDuplicate": "Всё равно добавить"
+    "duplicateWarning": "Эта книга, возможно, уже есть в списке.",
+    "overrideDuplicate": "Всё равно добавить",
+    "auth": {
+      "email": "Email",
+      "forgotTitle": "Сброс пароля",
+      "forgotSubtitle": "Введите email администратора. Если он зарегистрирован, мы отправим ссылку для сброса.",
+      "forgotLink": "Забыли пароль?",
+      "sendReset": "Отправить ссылку",
+      "backToLogin": "Назад ко входу",
+      "resetTitle": "Новый пароль",
+      "resetSubtitle": "Пароль только для вас. Никому его не сообщайте.",
+      "newPassword": "Новый пароль",
+      "confirmPassword": "Подтвердите пароль",
+      "savePassword": "Сохранить пароль"
+    },
+    "quick": {
+      "addBook": "Добавить книгу",
+      "selectBook": "Выбрать книгу месяца",
+      "createMeetup": "Создать встречу",
+      "importIg": "Импортировать фото Instagram"
+    },
+    "meetups": {
+      "hint": "Создайте следующую встречу. Черновики не появляются на главной, пока вы их не опубликуете."
+    },
+    "preview": {
+      "mobile": "Превью телефона",
+      "desktop": "Превью компьютера"
+    },
+    "instagram": {
+      "connect": "Подключить @bla.bla.books.cy",
+      "reconnect": "Подключить заново",
+      "disconnect": "Отключить",
+      "disconnectConfirm": "Это отключает только сайт. Аккаунт Instagram не меняется.",
+      "syncNow": "Синхронизировать",
+      "connected": "Подключено",
+      "notConnected": "Не подключено",
+      "connectHint": "Дарья входит в Instagram на сайте Meta — пароль Instagram сюда вводить не нужно.",
+      "needsReconnect": "Instagram нужно подключить заново.",
+      "lastSync": "Последняя синхронизация",
+      "available": "Импортированные посты",
+      "autoSync": "Автоматическая синхронизация",
+      "autoPublish": "Сразу публиковать новые посты Instagram",
+      "publishSelected": "Опубликовать выбранные",
+      "hideSelected": "Скрыть выбранные",
+      "featureSelected": "В избранное",
+      "select": "Выбрать",
+      "published": "Опубликовано",
+      "hidden": "Скрыто",
+      "featured": "На главной",
+      "unreviewed": "Ещё не просмотрено",
+      "openOriginal": "Открыть в Instagram",
+      "emptyQueue": "Пока нет импортированных фото Instagram.",
+      "syncOk": "Синхронизация завершена.",
+      "syncFailed": "Сейчас не получилось импортировать новые фото. Галерея на сайте не изменилась.",
+      "disconnected": "Instagram отключён.",
+      "missingEnv": "Instagram ещё не настроен на сервере. Нужны переменные приложения Meta.",
+      "syncHistory": "Недавние синхронизации"
+    }
   },
   "Common": {
     "loading": "Загрузка…",

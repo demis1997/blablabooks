@@ -27,6 +27,7 @@ export type AnnouncementActionResult<T = unknown> = {
 async function revalidate() {
   const locale = await getLocale();
   revalidatePath(`/${locale}/admin/announcements`);
+  revalidatePath(`/${locale}/admin/meetups`);
   revalidatePath(`/${locale}`);
   revalidatePath(`/${locale}/admin`);
 }
@@ -126,6 +127,52 @@ export async function deleteAnnouncement(
   });
   await revalidate();
   return { ok: true };
+}
+
+export async function duplicateAnnouncement(
+  id: string,
+): Promise<AnnouncementActionResult<Announcement>> {
+  await requireAdmin();
+  const existing = await getAnnouncementById(id);
+  if (!existing) return { ok: false, error: "Announcement not found" };
+
+  try {
+    const saved = await upsertAnnouncementRecord({
+      title_en: `${existing.title_en} (copy)`,
+      title_ru: existing.title_ru,
+      description_en: existing.description_en,
+      description_ru: existing.description_ru,
+      announcement_type: existing.announcement_type,
+      event_date: existing.event_date,
+      start_time: existing.start_time,
+      end_time: existing.end_time,
+      venue: existing.venue,
+      address: existing.address,
+      city: existing.city,
+      maps_url: existing.maps_url,
+      image_url: existing.image_url,
+      member_instructions: existing.member_instructions,
+      cancelled: false,
+      publish_at: null,
+      expires_at: existing.expires_at,
+      is_pinned: false,
+      status: "draft",
+      hide_when_expired: existing.hide_when_expired,
+    });
+    await logActivity({
+      admin_id: await getAdminId(),
+      action: "meetup.duplicated",
+      entity_type: "announcement",
+      entity_id: saved.id,
+    });
+    await revalidate();
+    return { ok: true, data: saved };
+  } catch (e) {
+    return {
+      ok: false,
+      error: e instanceof Error ? e.message : "Could not duplicate",
+    };
+  }
 }
 
 export async function getAdminAnnouncements(): Promise<Announcement[]> {

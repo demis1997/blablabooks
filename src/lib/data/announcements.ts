@@ -108,6 +108,9 @@ export async function upsertAnnouncement(
           description_ru: input.description_ru ?? null,
           maps_url: input.maps_url ?? null,
           image_url: input.image_url ?? null,
+          city: input.city ?? null,
+          member_instructions: input.member_instructions ?? null,
+          cancelled: input.cancelled ?? current.cancelled,
           updated_at: now,
         };
         draft.announcements[index] = next;
@@ -128,8 +131,11 @@ export async function upsertAnnouncement(
         end_time: input.end_time ?? null,
         venue: input.venue ?? null,
         address: input.address ?? null,
+        city: input.city ?? null,
         maps_url: input.maps_url ?? null,
         image_url: input.image_url ?? null,
+        member_instructions: input.member_instructions ?? null,
+        cancelled: input.cancelled ?? false,
         publish_at: input.publish_at ?? null,
         expires_at: input.expires_at ?? null,
         is_pinned: input.is_pinned ?? false,

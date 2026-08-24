@@ -39,7 +39,8 @@ export type UpdateSiteSettingsInput = Partial<
     | "instagram_url"
     | "logo_url"
     | "site_name"
-    | "default_locale"
+    | "instagram_auto_sync"
+    | "instagram_auto_publish"
   >
 >;
 

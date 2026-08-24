@@ -5,6 +5,7 @@ import type { User } from "@supabase/supabase-js";
 import type { Profile } from "@/types/database";
 import { createClient } from "./server";
 import { isSupabaseConfigured } from "./env";
+import { canAccessAdmin, isOwnerProfile } from "./auth-guard";
 
 export const DEMO_ADMIN_COOKIE = "bbb_demo_admin";
 
@@ -26,6 +27,7 @@ const DEMO_PROFILE: Profile = {
   email: "demo@blablabooks.local",
   display_name: "Demo Admin",
   is_admin: true,
+  role: "owner",
   created_at: "2026-01-01T00:00:00.000Z",
   updated_at: "2026-01-01T00:00:00.000Z",
 };
@@ -113,11 +115,32 @@ export async function requireAdmin(
     redirect(path);
   }
 
-  if (!session.profile.is_admin) {
-    redirect(path);
+  if (
+    !canAccessAdmin({
+      isSupabaseConfigured: true,
+      hasDemoCookie: false,
+      profile: session.profile,
+    })
+  ) {
+    redirect(`/${locale}`);
   }
 
   return session;
+}
+
+export async function requireOwner(
+  loginPath?: string,
+): Promise<AdminSession> {
+  const session = await requireAdmin(loginPath);
+  if (!isOwnerProfile(session.profile)) {
+    const locale = await getLocale();
+    redirect(`/${locale}/admin`);
+  }
+  return session;
+}
+
+export function sessionIsOwner(session: AdminSession): boolean {
+  return isOwnerProfile(session.profile);
 }
 
 export async function getAdminId(

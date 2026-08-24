@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { BookShell } from "@/components/book/book-shell";
-import { BookPage } from "@/components/book/book-page";
+import { ClubJournal } from "@/components/library/club-journal";
 import { PaperTexture } from "@/components/book/paper-texture";
 import { getEditablePage } from "@/lib/data/pages";
 import { markdownToHtml } from "@/lib/markdown";
@@ -57,8 +56,8 @@ export default async function AboutPage({ params }: PageProps) {
   const html = markdownToHtml(content);
 
   return (
-    <BookShell>
-      <BookPage chapterTitle={title} pageNumber="iii" side="left">
+    <ClubJournal>
+        <h1 className="mb-8 font-display text-3xl text-ink sm:text-4xl">{title}</h1>
         {/* Ex libris bookplate */}
         <div className="ex-libris relative mx-auto mb-10 max-w-sm overflow-hidden rounded-sm border-2 border-double border-ink/25 bg-paper px-6 py-5 text-center shadow-[var(--shadow-soft)]">
           <PaperTexture className="opacity-[0.05]" />
@@ -99,7 +98,6 @@ export default async function AboutPage({ params }: PageProps) {
             {t("bilingualNote")}
           </aside>
         </div>
-      </BookPage>
-    </BookShell>
+    </ClubJournal>
   );
 }

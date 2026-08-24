@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "@/i18n/navigation";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 type GalleryAdminProps = {
@@ -141,6 +142,19 @@ export function GalleryAdmin({ images: initial }: GalleryAdminProps) {
               alt={img.alt_text ?? ""}
               className="aspect-[4/3] w-full rounded-xl object-cover"
             />
+            <div className="mt-2 flex flex-wrap gap-1">
+              <Badge variant="muted">
+                {img.source === "instagram" ? "Instagram" : "Manual upload"}
+              </Badge>
+              <Badge variant="secondary">
+                {img.status === "published"
+                  ? "Published"
+                  : img.reviewed
+                    ? "Hidden"
+                    : "Not yet reviewed"}
+              </Badge>
+              {img.is_featured ? <Badge>Featured</Badge> : null}
+            </div>
             <div className="mt-3 space-y-2">
               <div className="space-y-1">
                 <Label className="text-xs">{t("gallery.captionEn")}</Label>

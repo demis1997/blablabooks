@@ -19,7 +19,7 @@ export default async function AdminAnnouncementsPage({ params }: PageProps) {
       <h1 className="font-display text-3xl text-ink">
         {t("nav.announcements")}
       </h1>
-      <AnnouncementsAdmin announcements={announcements} />
+      <AnnouncementsAdmin announcements={announcements} mode="notices" />
     </div>
   );
 }

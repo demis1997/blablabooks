@@ -21,11 +21,16 @@ export type ImportStatus =
   | "failed"
   | "partial";
 
+export type AdminRole = "admin" | "owner";
+
+export type GallerySource = "instagram" | "manual";
+
 export interface Profile {
   id: string;
   email: string;
   display_name: string | null;
   is_admin: boolean;
+  role: AdminRole | null;
   created_at: string;
   updated_at: string;
 }
@@ -90,8 +95,11 @@ export interface Announcement {
   end_time: string | null;
   venue: string | null;
   address: string | null;
+  city: string | null;
   maps_url: string | null;
   image_url: string | null;
+  member_instructions: string | null;
+  cancelled: boolean;
   publish_at: string | null;
   expires_at: string | null;
   is_pinned: boolean;
@@ -131,6 +139,10 @@ export interface GalleryImage {
   created_at: string;
   updated_at: string;
   uploaded_by: string | null;
+  source: GallerySource;
+  instagram_media_id: string | null;
+  instagram_permalink: string | null;
+  reviewed: boolean;
 }
 
 export interface SiteSettings {
@@ -140,7 +152,35 @@ export interface SiteSettings {
   logo_url: string | null;
   site_name: string;
   default_locale: string;
+  instagram_auto_sync: boolean;
+  instagram_auto_publish: boolean;
   updated_at: string;
+}
+
+export interface InstagramConnectionPublic {
+  id: string;
+  instagram_user_id: string;
+  username: string | null;
+  profile_picture_url: string | null;
+  token_expires_at: string | null;
+  requires_reconnect: boolean;
+  last_synced_at: string | null;
+  last_sync_status: string | null;
+  last_sync_message: string | null;
+  connected: boolean;
+}
+
+export interface InstagramSyncLog {
+  id: string;
+  connection_id: string | null;
+  triggered_by: string;
+  status: string;
+  fetched_count: number;
+  added_count: number;
+  skipped_count: number;
+  failed_count: number;
+  message: string | null;
+  created_at: string;
 }
 
 export interface EditablePage {

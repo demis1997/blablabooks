@@ -1,7 +1,7 @@
 export type AdminAccessInput = {
   isSupabaseConfigured: boolean;
   hasDemoCookie: boolean;
-  profile: { is_admin: boolean } | null;
+  profile: { is_admin: boolean; role?: "admin" | "owner" | null } | null;
 };
 
 /**
@@ -18,5 +18,13 @@ export function canAccessAdmin({
     return hasDemoCookie;
   }
 
-  return Boolean(profile?.is_admin);
+  return Boolean(
+    profile?.is_admin || profile?.role === "admin" || profile?.role === "owner",
+  );
+}
+
+export function isOwnerProfile(profile: {
+  role?: "admin" | "owner" | null;
+} | null): boolean {
+  return profile?.role === "owner";
 }

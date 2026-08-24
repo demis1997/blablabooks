@@ -2,6 +2,7 @@
 
 import { useActionState, useTransition } from "react";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { demoLogin, login, type AuthActionResult } from "@/lib/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -86,6 +87,11 @@ export function LoginForm({ supabaseConfigured }: LoginFormProps) {
             {t("signIn")}
           </Button>
         </form>
+        <p className="mt-4 text-center text-sm">
+          <Link href="/admin/forgot-password" className="underline underline-offset-4">
+            {t("auth.forgotLink")}
+          </Link>
+        </p>
       </CardContent>
     </Card>
   );

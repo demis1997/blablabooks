@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { BooksBrowser } from "@/components/books/books-browser";
-import { BookShell } from "@/components/book/book-shell";
-import { BookPage } from "@/components/book/book-page";
+import { CatalogueShelf } from "@/components/library/catalogue-shelf";
 import { listBooks, type BookSort } from "@/lib/data/books";
 import { routing } from "@/i18n/routing";
 import type { BookStatus } from "@/types/database";
@@ -77,18 +76,15 @@ export default async function BooksPage({ params, searchParams }: PageProps) {
   const t = await getTranslations({ locale, namespace: "Books" });
 
   return (
-    <BookShell>
-      <BookPage chapterTitle={t("title")} pageNumber="i" side="left">
-        <p className="mb-8 max-w-2xl text-ink-muted">{t("subtitle")}</p>
-        <BooksBrowser
-          initialBooks={result.books}
-          total={result.total}
-          pageSize={PAGE_SIZE}
-          initialSearch={q}
-          initialStatus={status ?? ""}
-          initialSort={sort}
-        />
-      </BookPage>
-    </BookShell>
+    <CatalogueShelf title={t("title")} subtitle={t("subtitle")}>
+      <BooksBrowser
+        initialBooks={result.books}
+        total={result.total}
+        pageSize={PAGE_SIZE}
+        initialSearch={q}
+        initialStatus={status ?? ""}
+        initialSort={sort}
+      />
+    </CatalogueShelf>
   );
 }

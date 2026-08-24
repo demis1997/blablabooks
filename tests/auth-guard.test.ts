@@ -35,6 +35,22 @@ describe("canAccessAdmin", () => {
       canAccessAdmin({
         isSupabaseConfigured: true,
         hasDemoCookie: true,
+        profile: { is_admin: false, role: "owner" },
+      }),
+    ).toBe(true);
+
+    expect(
+      canAccessAdmin({
+        isSupabaseConfigured: true,
+        hasDemoCookie: false,
+        profile: { is_admin: false, role: "admin" },
+      }),
+    ).toBe(true);
+
+    expect(
+      canAccessAdmin({
+        isSupabaseConfigured: true,
+        hasDemoCookie: true,
         profile: { is_admin: false },
       }),
     ).toBe(false);

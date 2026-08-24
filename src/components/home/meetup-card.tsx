@@ -7,6 +7,7 @@ import { BookSpread } from "@/components/book/book-spread";
 import { PaperCard } from "@/components/book/paper-card";
 import { Button } from "@/components/ui/button";
 import { localizeAnnouncementField } from "@/lib/books/announcements";
+import { buildGoogleCalendarUrl } from "@/lib/meetups";
 import { motionTokens } from "@/lib/motion/tokens";
 import type { Locale } from "@/lib/constants";
 import type { Announcement } from "@/types/database";
@@ -15,24 +16,6 @@ type MeetupCardProps = {
   announcement: Announcement;
   locale: Locale;
 };
-
-function buildGoogleCalendarUrl(announcement: Announcement, title: string) {
-  if (!announcement.event_date) return null;
-  const start = (announcement.start_time ?? "18:00").replace(":", "");
-  const end = (announcement.end_time ?? "20:00").replace(":", "");
-  const day = announcement.event_date.replace(/-/g, "");
-  const dates = `${day}T${start}00/${day}T${end}00`;
-  const params = new URLSearchParams({
-    action: "TEMPLATE",
-    text: title,
-    dates,
-    details: announcement.description_en ?? "",
-    location:
-      [announcement.venue, announcement.address].filter(Boolean).join(", ") ||
-      "",
-  });
-  return `https://calendar.google.com/calendar/render?${params.toString()}`;
-}
 
 export function MeetupCard({ announcement, locale }: MeetupCardProps) {
   const t = useTranslations("Home");
@@ -146,7 +129,7 @@ export function MeetupCard({ announcement, locale }: MeetupCardProps) {
               <p className="mt-1 text-sm text-ink">
                 {[dateLabel, timeLabel].filter(Boolean).join(" · ")}
               </p>
-              <div className="mt-3">
+              <div className="mt-3 flex flex-wrap gap-2">
                 <Button asChild variant="outline" size="sm">
                   <a
                     href={calendarUrl}
@@ -155,6 +138,11 @@ export function MeetupCard({ announcement, locale }: MeetupCardProps) {
                   >
                     <CalendarPlus className="h-4 w-4" />
                     {t("addToCalendar")}
+                  </a>
+                </Button>
+                <Button asChild variant="ghost" size="sm">
+                  <a href={`/api/meetups/${announcement.id}/ics`}>
+                    {t("downloadIcs")}
                   </a>
                 </Button>
               </div>

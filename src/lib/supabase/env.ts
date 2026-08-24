@@ -20,6 +20,10 @@ export function getSupabaseEnv(): {
   return { url, anonKey };
 }
 
+export function hasSupabaseServiceRole(): boolean {
+  return Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY?.trim());
+}
+
 export function getSupabaseServiceRoleKey(): string {
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
   if (!key) {

@@ -5,6 +5,8 @@ import type {
   EditablePage,
   GalleryImage,
   ImportRecord,
+  InstagramConnectionPublic,
+  InstagramSyncLog,
   MonthlyDraw,
   SiteSettings,
 } from "@/types/database";
@@ -1290,8 +1292,11 @@ export const DEMO_ANNOUNCEMENTS: Announcement[] = [
     end_time: "21:00",
     venue: "Gin Garden",
     address: "Limassol, Cyprus",
+    city: "Limassol",
     maps_url: "https://www.google.com/maps/search/?api=1&query=Gin+Garden+Limassol",
     image_url: null,
+    member_instructions: null,
+    cancelled: false,
     publish_at: "2026-08-01T08:00:00.000Z",
     expires_at: "2026-09-29T00:00:00.000Z",
     is_pinned: true,
@@ -1323,6 +1328,10 @@ export const DEMO_GALLERY: GalleryImage[] = [
     created_at: "2026-04-13T10:00:00.000Z",
     updated_at: "2026-04-13T10:00:00.000Z",
     uploaded_by: null,
+    source: "manual",
+    instagram_media_id: null,
+    instagram_permalink: null,
+    reviewed: true,
   },
   {
     id: "33333333-3333-4333-8333-333333333302",
@@ -1343,6 +1352,10 @@ export const DEMO_GALLERY: GalleryImage[] = [
     created_at: "2026-05-11T10:00:00.000Z",
     updated_at: "2026-05-11T10:00:00.000Z",
     uploaded_by: null,
+    source: "manual",
+    instagram_media_id: null,
+    instagram_permalink: null,
+    reviewed: true,
   },
   {
     id: "33333333-3333-4333-8333-333333333303",
@@ -1363,6 +1376,10 @@ export const DEMO_GALLERY: GalleryImage[] = [
     created_at: "2026-06-09T10:00:00.000Z",
     updated_at: "2026-06-09T10:00:00.000Z",
     uploaded_by: null,
+    source: "manual",
+    instagram_media_id: null,
+    instagram_permalink: null,
+    reviewed: true,
   },
   {
     id: "33333333-3333-4333-8333-333333333304",
@@ -1383,6 +1400,10 @@ export const DEMO_GALLERY: GalleryImage[] = [
     created_at: "2026-07-13T10:00:00.000Z",
     updated_at: "2026-07-13T10:00:00.000Z",
     uploaded_by: null,
+    source: "manual",
+    instagram_media_id: null,
+    instagram_permalink: null,
+    reviewed: true,
   },
 ];
 
@@ -1393,6 +1414,8 @@ const DEMO_SETTINGS: SiteSettings = {
   logo_url: null,
   site_name: SITE_NAME,
   default_locale: "en",
+  instagram_auto_sync: true,
+  instagram_auto_publish: false,
   updated_at: "2026-08-01T00:00:00.000Z",
 };
 
@@ -1497,6 +1520,9 @@ export type DemoStore = {
   draws: MonthlyDraw[];
   activity: ActivityLog[];
   imports: ImportRecord[];
+  instagram: InstagramConnectionPublic | null;
+  instagramToken: string | null;
+  instagramLogs: InstagramSyncLog[];
 };
 
 function createInitialStore(): DemoStore {
@@ -1509,6 +1535,9 @@ function createInitialStore(): DemoStore {
     draws: structuredClone(DEMO_DRAWS),
     activity: structuredClone(DEMO_ACTIVITY),
     imports: [],
+    instagram: null,
+    instagramToken: null,
+    instagramLogs: [],
   };
 }
 

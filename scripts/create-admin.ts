@@ -1,17 +1,15 @@
 /**
- * Invite/create an Auth user and mark their profile as admin.
+ * Invite the first owner (Daria) via the Supabase Admin API.
+ * Never prints or stores a password — she chooses it from the email link.
  *
- * Usage:
- *   npm run create-admin -- you@example.com
- *   npm run create-admin -- you@example.com "Display Name"
+ *   npm run create-admin
  *
- * Requires NEXT_PUBLIC_SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY.
- *
- * Or use SQL only after the user exists:
- *   UPDATE profiles SET is_admin = true WHERE email = 'you@example.com';
+ * Requires NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.
  */
 import { readFileSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
+import { createInterface } from "node:readline/promises";
+import { stdin as input, stdout as output } from "node:process";
 import { createClient } from "@supabase/supabase-js";
 
 function loadEnvFiles() {
@@ -41,25 +39,32 @@ function loadEnvFiles() {
 
 loadEnvFiles();
 
-const email = process.argv[2]?.trim();
-const displayName = process.argv[3]?.trim() || null;
+async function prompt(question: string, fallback?: string): Promise<string> {
+  const arg = process.argv[2]?.trim();
+  if (arg && question.toLowerCase().includes("email")) return arg;
+  const nameArg = process.argv[3]?.trim();
+  if (nameArg && question.toLowerCase().includes("display")) return nameArg;
+
+  if (!input.isTTY) {
+    return fallback ?? "";
+  }
+
+  const rl = createInterface({ input, output });
+  const suffix = fallback ? ` [${fallback}]` : "";
+  const answer = (await rl.question(`${question}${suffix}: `)).trim();
+  rl.close();
+  return answer || fallback || "";
+}
+
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
 const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL?.trim() || "http://localhost:3000";
 
-if (!email || !email.includes("@")) {
-  console.error("Usage: npm run create-admin -- you@example.com [display name]");
-  process.exit(1);
-}
-
 if (!url || !serviceKey) {
-  console.error(`
-Missing Supabase env. Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.
-
-SQL-only alternative after the user signs up:
-  UPDATE profiles SET is_admin = true WHERE email = '${email}';
-`);
+  console.error(
+    "Refusing to run: set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY (server-only). No password is created or printed.",
+  );
   process.exit(1);
 }
 
@@ -68,33 +73,40 @@ const supabase = createClient(url, serviceKey, {
 });
 
 async function main() {
+  const email = await prompt("Owner email");
+  const displayName = await prompt("Display name", "Daria");
+
+  if (!email.includes("@")) {
+    console.error("A valid email is required.");
+    process.exit(1);
+  }
+
+  const redirectTo = `${siteUrl.replace(/\/$/, "")}/auth/callback?next=/en/admin/reset-password`;
+
   const { data: invited, error: inviteError } =
     await supabase.auth.admin.inviteUserByEmail(email, {
-      redirectTo: `${siteUrl.replace(/\/$/, "")}/en/admin/login`,
-      data: displayName ? { display_name: displayName } : undefined,
+      redirectTo,
+      data: { display_name: displayName },
     });
 
   let userId = invited.user?.id;
 
   if (inviteError) {
-    // User may already exist — look them up
     const { data: listed, error: listError } =
       await supabase.auth.admin.listUsers({ perPage: 1000 });
     if (listError) {
-      throw new Error(
-        `Invite failed (${inviteError.message}) and listUsers failed (${listError.message})`,
-      );
+      throw new Error("Could not invite or look up that user.");
     }
     const existing = listed.users.find(
       (u) => u.email?.toLowerCase() === email.toLowerCase(),
     );
     if (!existing) {
-      throw new Error(`Invite failed: ${inviteError.message}`);
+      throw new Error("Could not invite that user. Check the email and try again.");
     }
     userId = existing.id;
-    console.log(`User already exists: ${email}`);
+    console.log(`User already exists. Owner role will be assigned to ${email}.`);
   } else {
-    console.log(`Invite sent to ${email}`);
+    console.log(`Invitation sent to ${email}. They will choose their own password.`);
   }
 
   if (!userId) {
@@ -107,18 +119,19 @@ async function main() {
       email,
       display_name: displayName,
       is_admin: true,
+      role: "owner",
     },
     { onConflict: "id" },
   );
 
   if (profileError) {
-    throw new Error(`Failed to set admin profile: ${profileError.message}`);
+    throw new Error("Could not assign the owner role.");
   }
 
-  console.log(`Admin flag set for ${email} (${userId})`);
+  console.log(`Owner role assigned (${displayName}).`);
 }
 
 main().catch((err) => {
-  console.error(err instanceof Error ? err.message : err);
+  console.error(err instanceof Error ? err.message : "Setup failed");
   process.exit(1);
 });

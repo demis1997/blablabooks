@@ -10,10 +10,11 @@ export function isAnnouncementVisible(
   announcement: Pick<
     Announcement,
     "status" | "publish_at" | "expires_at" | "hide_when_expired"
-  >,
+  > & { cancelled?: boolean | null },
   now: Date = new Date(),
 ): boolean {
   if (announcement.status !== "published") return false;
+  if (announcement.cancelled) return false;
 
   if (announcement.publish_at) {
     const publishAt = new Date(announcement.publish_at);

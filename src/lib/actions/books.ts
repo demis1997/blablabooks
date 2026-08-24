@@ -249,6 +249,18 @@ export async function setCurrentBook(
     pageSize: 50,
   });
 
+  const already = current.find((book) => book.id === id);
+  if (
+    already &&
+    already.selected_month === selectedMonth &&
+    already.selected_year === selectedYear
+  ) {
+    return {
+      ok: false,
+      error: "This book is already confirmed for that month.",
+    };
+  }
+
   for (const book of current) {
     if (book.id !== id) {
       await updateBookRecord({

@@ -32,8 +32,12 @@
     "nextMeetup": "Next meetup",
     "openMaps": "Open in Maps",
     "addToCalendar": "Add to calendar",
+    "downloadIcs": "Download calendar file",
     "howItWorks": {
       "title": "How it works",
+      "pick": "Pick",
+      "read": "Read",
+      "meet": "Meet",
       "step1Title": "We pick a book",
       "step1Body": "Candidates go into the pool. Each month we draw one title for the club to read together.",
       "step2Title": "We read",
@@ -48,7 +52,12 @@
       "body": "Photos, reminders, and the soft chaos of club life — @bla.bla.books.cy",
       "button": "Open Instagram"
     },
-    "noCurrentBook": "No current book yet — check back soon, or peek at the candidates."
+    "noCurrentBook": "No current book yet — check back soon, or peek at the candidates.",
+    "thisMonthsRead": "This Month’s Read",
+    "seeYouNextChapter": "See you at the next chapter.",
+    "mapPocket": "Map",
+    "ticket": "Ticket",
+    "closingNav": "Keep exploring"
   },
   "Books": {
     "title": "Books",
@@ -60,6 +69,7 @@
       "previouslyRead": "Previously read"
     },
     "searchPlaceholder": "Search by title or author…",
+    "catalogueKicker": "Catalogue",
     "sortBy": "Sort by",
     "sorts": {
       "dateAdded": "Date added",
@@ -111,7 +121,7 @@
     "empty": "No photos yet — our next meetup might change that.",
     "fromInstagram": "Photos from @bla.bla.books.cy",
     "openInstagram": "Open Instagram",
-    "instagramHint": "Live photos load from Instagram when the club’s Meta token is configured. Until then, follow the club on Instagram.",
+    "instagramHint": "Photos Daria publishes from the admin gallery — including selected Instagram posts. Follow the club on Instagram for more.",
     "filterYear": "Year",
     "filterEvent": "Event",
     "allYears": "All years",
@@ -155,7 +165,9 @@
       "randomizer": "Randomizer",
       "currentBook": "Current book",
       "announcements": "Announcements",
+      "meetups": "Meetups",
       "gallery": "Gallery",
+      "instagram": "Instagram",
       "pages": "Pages",
       "import": "Import",
       "settings": "Settings",
@@ -168,6 +180,10 @@
       "previouslyRead": "Previously read",
       "announcements": "Announcements",
       "galleryImages": "Gallery images",
+      "publishedGallery": "Published photos",
+      "nextMeetup": "Next meetup",
+      "instagram": "Instagram",
+      "lastIgSync": "Last Instagram sync",
       "recentActivity": "Recent activity"
     },
     "books": {
@@ -223,7 +239,14 @@
       "title": "Current book",
       "setCurrent": "Set as currently reading",
       "markPreviouslyRead": "Mark as previously read",
-      "none": "No book is marked as currently reading."
+      "none": "No book is marked as currently reading.",
+      "methods": "Choose a candidate below, or use the randomizer. The animation never decides the result.",
+      "openRandomizer": "Open randomizer",
+      "previous": "Previous monthly books",
+      "confirmTitle": "Publish this month’s book?",
+      "confirmBody": "This updates the public homepage. The previous current book will be marked as previously read.",
+      "replace": "Replace current book",
+      "replaceBody": "Clear the current selection so you can choose another title."
     },
     "announcements": {
       "add": "New announcement",
@@ -244,7 +267,9 @@
       "endTime": "End time",
       "venue": "Venue",
       "address": "Address",
+      "city": "City",
       "mapsUrl": "Maps URL",
+      "memberInstructions": "Member instructions",
       "imageUrl": "Image URL",
       "publishAt": "Publish at",
       "expiresAt": "Expires at",
@@ -340,8 +365,64 @@
       "signedIn": "Signed in",
       "signedOut": "Signed out"
     },
-    "duplicateWarning": "A similar book may already exist in the library.",
-    "overrideDuplicate": "Add anyway"
+    "duplicateWarning": "This book may already be on the list.",
+    "overrideDuplicate": "Add anyway",
+    "auth": {
+      "email": "Email",
+      "forgotTitle": "Reset password",
+      "forgotSubtitle": "Enter the administrator email. If it is registered, we will send a reset link.",
+      "forgotLink": "Forgot password?",
+      "sendReset": "Send reset link",
+      "backToLogin": "Back to sign-in",
+      "resetTitle": "Choose a new password",
+      "resetSubtitle": "This is private. Nobody else should see this password.",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm password",
+      "savePassword": "Save password"
+    },
+    "quick": {
+      "addBook": "Add book",
+      "selectBook": "Select monthly book",
+      "createMeetup": "Create meetup",
+      "importIg": "Import Instagram photos"
+    },
+    "meetups": {
+      "hint": "Create the next club meetup. Drafts stay off the homepage until you publish."
+    },
+    "preview": {
+      "mobile": "Phone preview",
+      "desktop": "Desktop preview"
+    },
+    "instagram": {
+      "connect": "Connect @bla.bla.books.cy",
+      "reconnect": "Reconnect Instagram",
+      "disconnect": "Disconnect",
+      "disconnectConfirm": "This only disconnects the website. The Instagram account itself stays unchanged.",
+      "syncNow": "Sync now",
+      "connected": "Connected",
+      "notConnected": "Not connected",
+      "connectHint": "Daria signs in on Instagram — never enter the Instagram password here.",
+      "needsReconnect": "Instagram needs to be reconnected.",
+      "lastSync": "Last sync",
+      "available": "Imported posts",
+      "autoSync": "Automatic synchronization",
+      "autoPublish": "Automatically publish new Instagram posts",
+      "publishSelected": "Publish selected",
+      "hideSelected": "Hide selected",
+      "featureSelected": "Feature selected",
+      "select": "Select",
+      "published": "Published",
+      "hidden": "Hidden",
+      "featured": "Featured",
+      "unreviewed": "Not yet reviewed",
+      "openOriginal": "Open on Instagram",
+      "emptyQueue": "No Instagram photos imported yet.",
+      "syncOk": "Sync finished.",
+      "syncFailed": "We couldn’t import new photos right now. Your existing gallery is unchanged.",
+      "disconnected": "Instagram disconnected.",
+      "missingEnv": "Instagram isn’t configured on the server yet. Ask the developer to set the Meta app variables.",
+      "syncHistory": "Recent syncs"
+    }
   },
   "Common": {
     "loading": "Loading…",

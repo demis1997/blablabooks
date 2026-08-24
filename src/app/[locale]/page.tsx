@@ -1,17 +1,28 @@
+import dynamic from "next/dynamic";
 import { setRequestLocale } from "next-intl/server";
-import { BookShell } from "@/components/book/book-shell";
-import { HomeHero } from "@/components/home/home-hero";
-import { CurrentBookSection } from "@/components/home/current-book-section";
-import { MeetupCard } from "@/components/home/meetup-card";
-import { HowItWorks } from "@/components/home/how-it-works";
-import { GalleryPreview } from "@/components/home/gallery-preview";
-import { InstagramCta } from "@/components/home/instagram-cta";
+import { LibraryScene } from "@/components/library/library-scene";
+import { HeroHardcover } from "@/components/library/hero-hardcover";
+import { CurrentReadNovel } from "@/components/library/current-read-novel";
+import { MeetupDiary } from "@/components/library/meetup-diary";
+import { MiniBookStack } from "@/components/library/mini-book-stack";
 import { getCurrentBook, getCandidateBooks } from "@/lib/data/books";
 import { getPublishedAnnouncements } from "@/lib/data/announcements";
 import { listGalleryImages } from "@/lib/data/gallery";
 import { getSiteSettings } from "@/lib/data/settings";
+import { pickAnnouncementBanner, pickNextMeetup } from "@/lib/meetups";
+import { AnnouncementBanner } from "@/components/home/announcement-banner";
 import { routing } from "@/i18n/routing";
 import type { Locale } from "@/lib/constants";
+
+const GalleryAlbum = dynamic(() =>
+  import("@/components/library/gallery-album").then((m) => m.GalleryAlbum),
+);
+const InstagramZine = dynamic(() =>
+  import("@/components/library/instagram-zine").then((m) => m.InstagramZine),
+);
+const FinalBookStack = dynamic(() =>
+  import("@/components/library/final-book-stack").then((m) => m.FinalBookStack),
+);
 
 type PageProps = {
   params: Promise<{ locale: string }>;
@@ -35,25 +46,25 @@ export default async function HomePage({ params }: PageProps) {
       getSiteSettings(),
     ]);
 
-  const nextMeetup =
-    announcements.find((a) => a.announcement_type === "meetup") ??
-    announcements[0] ??
-    null;
+  const nextMeetup = pickNextMeetup(announcements);
+  const banner = pickAnnouncementBanner(announcements);
 
   return (
-    <BookShell className="pt-4 sm:pt-6">
-      <div className="flex flex-col">
-        <HomeHero currentBook={currentBook} candidateBooks={candidates} />
-        {currentBook ? (
-          <CurrentBookSection book={currentBook} locale={locale} />
-        ) : null}
-        {nextMeetup ? (
-          <MeetupCard announcement={nextMeetup} locale={locale} />
-        ) : null}
-        <HowItWorks />
-        <GalleryPreview images={gallery} locale={locale} />
-        <InstagramCta href={settings.instagram_url} />
-      </div>
-    </BookShell>
+    <LibraryScene>
+      {banner ? (
+        <AnnouncementBanner announcement={banner} locale={locale} />
+      ) : null}
+      <HeroHardcover currentBook={currentBook} candidateBooks={candidates} />
+      {currentBook ? (
+        <CurrentReadNovel book={currentBook} locale={locale} />
+      ) : null}
+      {nextMeetup ? (
+        <MeetupDiary announcement={nextMeetup} locale={locale} />
+      ) : null}
+      <MiniBookStack />
+      <GalleryAlbum images={gallery} locale={locale} />
+      <InstagramZine href={settings.instagram_url} photos={gallery} />
+      <FinalBookStack />
+    </LibraryScene>
   );
 }

@@ -7,6 +7,7 @@ import type { Announcement } from "@/types/database";
 import {
   archiveAnnouncement,
   deleteAnnouncement,
+  duplicateAnnouncement,
   publishAnnouncement,
   saveAnnouncement,
   unpublishAnnouncement,
@@ -34,10 +35,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { LivePreview } from "@/components/admin/live-preview";
 import { useRouter } from "@/i18n/navigation";
 
 type AnnouncementsAdminProps = {
   announcements: Announcement[];
+  mode?: "all" | "meetups" | "notices";
 };
 
 const emptyForm = {
@@ -52,17 +55,27 @@ const emptyForm = {
   venue: "",
   address: "",
   maps_url: "",
+  city: "",
+  member_instructions: "",
   is_pinned: false,
   status: "draft" as const,
   hide_when_expired: true,
 };
 
-export function AnnouncementsAdmin({ announcements }: AnnouncementsAdminProps) {
+export function AnnouncementsAdmin({
+  announcements,
+  mode = "all",
+}: AnnouncementsAdminProps) {
   const t = useTranslations("Admin");
   const router = useRouter();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState(emptyForm);
   const [isPending, startTransition] = useTransition();
+  const visible = announcements.filter((a) => {
+    if (mode === "meetups") return a.announcement_type === "meetup";
+    if (mode === "notices") return a.announcement_type !== "meetup";
+    return true;
+  });
 
   const loadForEdit = (a: Announcement) => {
     setEditingId(a.id);
@@ -78,6 +91,8 @@ export function AnnouncementsAdmin({ announcements }: AnnouncementsAdminProps) {
       venue: a.venue ?? "",
       address: a.address ?? "",
       maps_url: a.maps_url ?? "",
+      city: a.city ?? "",
+      member_instructions: a.member_instructions ?? "",
       is_pinned: a.is_pinned,
       status: a.status as typeof emptyForm.status,
       hide_when_expired: a.hide_when_expired,
@@ -98,13 +113,21 @@ export function AnnouncementsAdmin({ announcements }: AnnouncementsAdminProps) {
           title_ru: form.title_ru || null,
           description_en: form.description_en || null,
           description_ru: form.description_ru || null,
-          announcement_type: form.announcement_type,
+          announcement_type:
+            mode === "meetups"
+              ? "meetup"
+              : mode === "notices" && form.announcement_type === "meetup"
+                ? "general"
+                : form.announcement_type,
           event_date: form.event_date || null,
           start_time: form.start_time || null,
           end_time: form.end_time || null,
           venue: form.venue || null,
           address: form.address || null,
           maps_url: form.maps_url || null,
+          city: form.city || null,
+          member_instructions: form.member_instructions || null,
+          cancelled: false,
           image_url: null,
           publish_at: null,
           expires_at: null,
@@ -247,6 +270,13 @@ export function AnnouncementsAdmin({ announcements }: AnnouncementsAdminProps) {
             />
           </div>
           <div className="space-y-1.5">
+            <Label>{t("announcements.city")}</Label>
+            <Input
+              value={form.city}
+              onChange={(e) => setForm((f) => ({ ...f, city: e.target.value }))}
+            />
+          </div>
+          <div className="space-y-1.5">
             <Label>{t("announcements.address")}</Label>
             <Input
               value={form.address}
@@ -261,6 +291,16 @@ export function AnnouncementsAdmin({ announcements }: AnnouncementsAdminProps) {
               value={form.maps_url}
               onChange={(e) =>
                 setForm((f) => ({ ...f, maps_url: e.target.value }))
+              }
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label>{t("announcements.memberInstructions")}</Label>
+            <Textarea
+              rows={2}
+              value={form.member_instructions}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, member_instructions: e.target.value }))
               }
             />
           </div>
@@ -284,11 +324,34 @@ export function AnnouncementsAdmin({ announcements }: AnnouncementsAdminProps) {
               </Button>
             ) : null}
           </div>
+          <LivePreview
+            english={
+              <div>
+                <p className="font-display text-xl">{form.title_en || "Title"}</p>
+                <p className="mt-2 text-ink-muted">{form.description_en}</p>
+                <p className="mt-2 text-xs">
+                  {[form.venue, form.city, form.event_date, form.start_time]
+                    .filter(Boolean)
+                    .join(" · ")}
+                </p>
+              </div>
+            }
+            russian={
+              <div>
+                <p className="font-display text-xl">
+                  {form.title_ru || form.title_en || "Заголовок"}
+                </p>
+                <p className="mt-2 text-ink-muted">
+                  {form.description_ru || form.description_en}
+                </p>
+              </div>
+            }
+          />
         </div>
       </div>
 
       <ul className="space-y-3">
-        {announcements.map((a) => (
+        {visible.map((a) => (
           <li
             key={a.id}
             className="rounded-2xl border border-ink/8 bg-paper p-4"
@@ -304,6 +367,31 @@ export function AnnouncementsAdmin({ announcements }: AnnouncementsAdminProps) {
               <div className="flex flex-wrap gap-1">
                 <Button size="sm" variant="ghost" onClick={() => loadForEdit(a)}>
                   Edit
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  disabled={isPending}
+                  onClick={() => run(() => duplicateAnnouncement(a.id))}
+                >
+                  Duplicate
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  disabled={isPending}
+                  onClick={() =>
+                    run(() =>
+                      saveAnnouncement({
+                        ...a,
+                        id: a.id,
+                        cancelled: true,
+                        status: a.status,
+                      }),
+                    )
+                  }
+                >
+                  Cancel
                 </Button>
                 {a.status !== "published" ? (
                   <Button

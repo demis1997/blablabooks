@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { RandomizerExperience } from "@/components/randomizer/randomizer-experience";
-import { BookShell } from "@/components/book/book-shell";
-import { BookPage } from "@/components/book/book-page";
+import { PopupBook } from "@/components/library/popup-book";
 import { EmptyState } from "@/components/ui/empty-state";
 import { getCandidateBooks } from "@/lib/data/books";
 import { getSiteSettings } from "@/lib/data/settings";
@@ -42,18 +41,15 @@ export default async function RandomizerPage({ params }: PageProps) {
   const t = await getTranslations({ locale, namespace: "Randomizer" });
 
   return (
-    <BookShell>
-      <BookPage chapterTitle={t("title")} pageNumber="iv" side="left">
-        <p className="mb-8 text-center text-ink-muted">{t("subtitle")}</p>
-        {!settings.public_randomizer_enabled ? (
-          <EmptyState
-            title={t("publicDisabled")}
-            description={t("adminOnly")}
-          />
-        ) : (
-          <RandomizerExperience eligibleBooks={candidates} displayOnly />
-        )}
-      </BookPage>
-    </BookShell>
+    <PopupBook title={t("title")} subtitle={t("subtitle")}>
+      {!settings.public_randomizer_enabled ? (
+        <EmptyState
+          title={t("publicDisabled")}
+          description={t("adminOnly")}
+        />
+      ) : (
+        <RandomizerExperience eligibleBooks={candidates} displayOnly />
+      )}
+    </PopupBook>
   );
 }

@@ -70,6 +70,10 @@ export async function uploadGalleryImages(
       created_at: now,
       updated_at: now,
       uploaded_by: await getAdminId(),
+      source: "manual",
+      instagram_media_id: null,
+      instagram_permalink: null,
+      reviewed: true,
     };
 
     if (!isSupabaseConfigured()) {
@@ -154,6 +158,32 @@ export async function reorderGalleryImages(
   }
   await revalidate();
   return { ok: true };
+}
+
+export async function bulkUpdateGallery(
+  ids: string[],
+  patch: {
+    status?: PublishStatus;
+    is_featured?: boolean;
+    event_id?: string | null;
+    reviewed?: boolean;
+  },
+): Promise<GalleryActionResult<{ count: number }>> {
+  await requireAdmin();
+  if (!ids.length) return { ok: false, error: "No photos selected" };
+
+  for (const id of ids) {
+    await updateGalleryImageMetadata({ id, ...patch, reviewed: true });
+  }
+  await logActivity({
+    admin_id: await getAdminId(),
+    action: patch.status === "published" ? "gallery.published" : "gallery.updated",
+    entity_type: "gallery_image",
+    entity_id: null,
+    details: { ids, ...patch },
+  });
+  await revalidate();
+  return { ok: true, data: { count: ids.length } };
 }
 
 export async function deleteGalleryImage(
