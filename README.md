@@ -143,3 +143,7 @@ Admin → **Import**. Prefill or upload CSV. Preview → map columns → commit.
 ## Admin user guide
 
 See [ADMIN_GUIDE.md](ADMIN_GUIDE.md).
+
+## Observed maintenance validation — 7 October 2026
+
+Locked installation, 53 tests across 13 files, TypeScript checks and the production build passed locally without production service credentials. Lint passed with one existing React compiler/library warning. CI now runs the same commands with npm and Next build caching, read-only permissions and a timeout. These checks do not establish production database policies, external integrations or browser E2E behavior.
