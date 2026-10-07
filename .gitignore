@@ -7,3 +7,9 @@ coverage
 *.log
 .vercel
 tsconfig.tsbuildinfo
+
+# Local environments and generated artifacts
+node_modules/
+.env.*
+!.env.example
+.next/
